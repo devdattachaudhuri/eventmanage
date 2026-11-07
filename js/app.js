@@ -14,11 +14,11 @@
   // STATE MANAGEMENT & LOCAL STORAGE
   // ---------------------------------------------------------------------------
   const STORAGE_KEYS = {
-    EVENTS: "nh_events_v2",
-    PASSES: "nh_passes_v2",
-    THEME: "nh_theme_v2",
-    SYNC_ROOM: "nh_sync_room_v2",
-    SENDER_ID: "nh_sender_id_v2"
+    EVENTS: "nh_events_v3",
+    PASSES: "nh_passes_v3",
+    THEME: "nh_theme_v3",
+    SYNC_ROOM: "nh_sync_room_v3",
+    SENDER_ID: "nh_sender_id_v3"
   };
 
   // Generate or retrieve persistent unique sender ID for this client/device
@@ -31,7 +31,7 @@
   // Determine active sync room (URL parameter ?room=xyz takes precedence over localStorage)
   const urlParams = new URLSearchParams(window.location.search);
   const roomParam = urlParams.get("room");
-  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM) || "nexushub_campus_mesh_global";
+  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM) || "nexushub_mesh_v3";
   if (roomParam) {
     localStorage.setItem(STORAGE_KEYS.SYNC_ROOM, roomParam);
   }
@@ -57,6 +57,8 @@
     // Purge legacy obsolete storage keys from early prototypes
     localStorage.removeItem("cp_events_v1");
     localStorage.removeItem("cp_passes_v1");
+    localStorage.removeItem("nh_events_v2");
+    localStorage.removeItem("nh_passes_v2");
 
     const blacklistedSignatures = [
       "innovatex", "harmonics", "robotics workshop", "cyberclash",
@@ -64,14 +66,14 @@
       "campushack", "campus-hack"
     ];
 
-    // 1. Events State with anti-stale validation
+    // 1. Events State with anti-stale validation: always ensure all 9 fresh events
     const savedEvents = localStorage.getItem(STORAGE_KEYS.EVENTS);
     let validEvents = null;
 
     if (savedEvents) {
       try {
         const parsed = JSON.parse(savedEvents);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed) && parsed.length === INITIAL_EVENTS.length) {
           const hasStaleOrBlacklisted = parsed.some(ev => {
             const t = (ev.title || "").toLowerCase();
             const id = (ev.id || "");
@@ -90,7 +92,7 @@
       state.events = validEvents;
     } else {
       state.events = typeof INITIAL_EVENTS !== "undefined" ? JSON.parse(JSON.stringify(INITIAL_EVENTS)) : [];
-      saveEventsToStorage(false);
+      localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(state.events));
     }
 
     // 2. Passes State
@@ -207,15 +209,19 @@
       };
 
       syncEventSource.onerror = () => {
+        if (syncEventSource && syncEventSource.readyState === EventSource.CONNECTING) {
+          updateSyncUI("connecting", "Reconnecting");
+          return;
+        }
         updateSyncUI("disconnected", "Offline");
         if (syncEventSource) {
           try { syncEventSource.close(); } catch (e) {}
           syncEventSource = null;
         }
-        // Graceful exponential-like single reconnect attempt (not a polling loop)
+        // Auto-reconnect after 4s
         syncReconnectTimeout = setTimeout(() => {
           initRealtimeSync();
-        }, 10000);
+        }, 4000);
       };
     } catch (err) {
       updateSyncUI("disconnected", "Offline");
@@ -1871,7 +1877,6 @@
         }
       }
     });
-  }
 
     // 13. Sync modal and controls event listeners
     const btnSyncAction = document.getElementById("btn-sync-action");
