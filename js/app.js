@@ -1053,6 +1053,11 @@
     form.elements["attendeeRole"].value = randomRole;
     if (form.elements["agreeTerms"]) form.elements["agreeTerms"].checked = true;
 
+    if (!form.elements["eventId"].value && state.events.length > 0) {
+      const avail = state.events.find(e => (e.totalSeats - e.bookedSeats) > 0) || state.events[0];
+      if (avail) form.elements["eventId"].value = avail.id;
+    }
+
     // Validate fields visually
     const inputs = [
       form.elements["fullName"],
