@@ -16,8 +16,29 @@
   const STORAGE_KEYS = {
     EVENTS: "cp_events_v1",
     PASSES: "cp_passes_v1",
-    THEME: "cp_theme"
+    THEME: "cp_theme",
+    SYNC_ROOM: "cp_sync_room_v1",
+    SENDER_ID: "cp_sender_id_v1"
   };
+
+  // Generate or retrieve persistent unique sender ID for this client/device
+  let senderId = localStorage.getItem(STORAGE_KEYS.SENDER_ID);
+  if (!senderId) {
+    senderId = "dev_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now().toString(36);
+    localStorage.setItem(STORAGE_KEYS.SENDER_ID, senderId);
+  }
+
+  // Determine active sync room (URL parameter ?room=xyz takes precedence over localStorage)
+  const urlParams = new URLSearchParams(window.location.search);
+  const roomParam = urlParams.get("room");
+  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM) || "nexushub_campus_mesh_global";
+  if (roomParam) {
+    localStorage.setItem(STORAGE_KEYS.SYNC_ROOM, roomParam);
+  }
+
+  let syncEventSource = null;
+  let syncStatus = "disconnected"; // 'connected' | 'connecting' | 'disconnected'
+  let syncReconnectTimeout = null;
 
   let state = {
     events: [],
@@ -65,18 +86,346 @@
     state.activeSpotlightEvent = state.events.find(ev => ev.featured) || state.events[0];
   }
 
-  function saveEventsToStorage() {
+  function saveEventsToStorage(broadcast = true) {
     localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(state.events));
+    if (broadcast) {
+      broadcastSyncAction("SYNC_EVENTS", { events: state.events });
+    }
   }
 
-  function savePassesToStorage() {
+  function savePassesToStorage(broadcast = true) {
     localStorage.setItem(STORAGE_KEYS.PASSES, JSON.stringify(state.passes));
     updatePassesBadge();
+    if (broadcast) {
+      broadcastSyncAction("SYNC_PASSES", { passes: state.passes });
+    }
   }
 
   // ---------------------------------------------------------------------------
-  // THEME SWITCHER LOGIC
+  // MULTI-DEVICE REAL-TIME CLOUD SYNCHRONIZATION (NTFY.SH ZERO-AUTH PUB/SUB)
   // ---------------------------------------------------------------------------
+  function getHubUrl(room) {
+    return `https://ntfy.sh/${encodeURIComponent(room)}`;
+  }
+
+  function updateSyncUI(status, label) {
+    syncStatus = status;
+    const dot = document.getElementById("sync-status-dot");
+    const text = document.getElementById("sync-status-text");
+    const indicator = document.getElementById("sync-status-indicator");
+    const modalStatus = document.getElementById("sync-connection-status-display");
+    const modalRoom = document.getElementById("sync-current-room-display");
+    const modalRoomInput = document.getElementById("sync-room-input");
+    const shareInput = document.getElementById("sync-shareable-link-input");
+
+    if (dot) {
+      dot.className = `sync-status-dot ${status}`;
+    }
+    if (text) {
+      text.textContent = label || (status === "connected" ? "Live Sync" : (status === "connecting" ? "Connecting" : "Offline"));
+    }
+    if (indicator) {
+      indicator.title = `Live Cloud Sync: ${status === "connected" ? "Active (Room: " + syncRoom + ")" : (status === "connecting" ? "Connecting to " + syncRoom : "Offline")}`;
+    }
+    if (modalStatus) {
+      modalStatus.textContent = status === "connected" ? `Active & Connected (SSE)` : (status === "connecting" ? `Connecting...` : `Offline / Reconnecting`);
+      modalStatus.className = `sync-info-value ${status}`;
+    }
+    if (modalRoom) {
+      modalRoom.textContent = syncRoom;
+    }
+    if (modalRoomInput && document.activeElement !== modalRoomInput) {
+      modalRoomInput.value = syncRoom;
+    }
+    if (shareInput) {
+      const shareUrl = new URL(window.location.href);
+      shareUrl.searchParams.set("room", syncRoom);
+      shareInput.value = shareUrl.toString();
+    }
+  }
+
+  function initRealtimeSync() {
+    if (syncEventSource) {
+      try { syncEventSource.close(); } catch (e) {}
+      syncEventSource = null;
+    }
+
+    if (syncReconnectTimeout) {
+      clearTimeout(syncReconnectTimeout);
+      syncReconnectTimeout = null;
+    }
+
+    updateSyncUI("connecting", "Connecting");
+
+    // Catch up on missed events immediately via poll=1 without aggressive intervals
+    fetchMissedHistory();
+
+    try {
+      const sseUrl = `${getHubUrl(syncRoom)}/sse`;
+      syncEventSource = new EventSource(sseUrl);
+
+      syncEventSource.onopen = () => {
+        updateSyncUI("connected", "Live Sync");
+      };
+
+      syncEventSource.onmessage = (event) => {
+        try {
+          const raw = JSON.parse(event.data);
+          // ntfy.sh messages enclose the body in the 'message' property
+          if (raw && raw.message) {
+            handleIncomingSyncPayload(raw.message);
+          }
+        } catch (err) {
+          // Ignore keepalives or non-JSON messages
+        }
+      };
+
+      syncEventSource.onerror = () => {
+        updateSyncUI("disconnected", "Offline");
+        if (syncEventSource) {
+          try { syncEventSource.close(); } catch (e) {}
+          syncEventSource = null;
+        }
+        // Graceful exponential-like single reconnect attempt (not a polling loop)
+        syncReconnectTimeout = setTimeout(() => {
+          initRealtimeSync();
+        }, 10000);
+      };
+    } catch (err) {
+      updateSyncUI("disconnected", "Offline");
+    }
+  }
+
+  function broadcastSyncAction(actionType, data = {}) {
+    const payload = {
+      senderId: senderId,
+      room: syncRoom,
+      action: actionType,
+      data: data,
+      timestamp: Date.now()
+    };
+
+    const messageString = JSON.stringify(payload);
+
+    // Send HTTP POST to ntfy.sh room
+    fetch(getHubUrl(syncRoom), {
+      method: "POST",
+      body: messageString,
+      headers: {
+        "Title": "CampusPulse Sync",
+        "Priority": "low"
+      }
+    }).catch(err => {
+      console.warn("Sync broadcast temporarily unavailable:", err);
+    });
+  }
+
+  function handleIncomingSyncPayload(rawString) {
+    let payload;
+    try {
+      payload = typeof rawString === "string" ? JSON.parse(rawString) : rawString;
+    } catch (e) {
+      return;
+    }
+
+    if (!payload || !payload.action) return;
+
+    // Reject self-broadcasts using senderId to eliminate infinite loops
+    if (payload.senderId === senderId) return;
+
+    // Verify room matches
+    if (payload.room && payload.room !== syncRoom) return;
+
+    let stateChanged = false;
+
+    if (payload.action === "BOOK_PASS" && payload.data && payload.data.pass) {
+      const incomingPass = payload.data.pass;
+      if (!state.passes.some(p => p.id === incomingPass.id)) {
+        state.passes.unshift(incomingPass);
+        savePassesToStorage(false);
+        stateChanged = true;
+      }
+      if (payload.data.eventId) {
+        const ev = state.events.find(e => e.id === payload.data.eventId);
+        if (ev) {
+          ev.bookedSeats = Math.min(ev.totalSeats, (ev.bookedSeats || 0) + 1);
+          saveEventsToStorage(false);
+          stateChanged = true;
+        }
+      }
+      showToast(`⚡ Real-time: Pass created on another device (${incomingPass.eventTitle})`, "success");
+    } else if (payload.action === "CANCEL_PASS" && payload.data && payload.data.passId) {
+      const targetId = payload.data.passId;
+      const passIdx = state.passes.findIndex(p => p.id === targetId);
+      if (passIdx !== -1) {
+        const removed = state.passes.splice(passIdx, 1)[0];
+        savePassesToStorage(false);
+        if (removed && removed.eventId) {
+          const ev = state.events.find(e => e.id === removed.eventId);
+          if (ev && ev.bookedSeats > 0) {
+            ev.bookedSeats -= 1;
+            saveEventsToStorage(false);
+          }
+        }
+        stateChanged = true;
+        showToast(`⚡ Real-time: Pass cancelled from another device`, "info");
+      }
+    } else if (payload.action === "SYNC_PASSES" && payload.data && Array.isArray(payload.data.passes)) {
+      // Merge unique passes by ID
+      const existingIds = new Set(state.passes.map(p => p.id));
+      let added = 0;
+      payload.data.passes.forEach(p => {
+        if (!existingIds.has(p.id)) {
+          state.passes.unshift(p);
+          existingIds.add(p.id);
+          added++;
+        }
+      });
+      if (added > 0) {
+        savePassesToStorage(false);
+        stateChanged = true;
+      }
+    } else if (payload.action === "SYNC_EVENTS" && payload.data && Array.isArray(payload.data.events)) {
+      // Synchronize seat counts
+      payload.data.events.forEach(incomingEv => {
+        const localEv = state.events.find(e => e.id === incomingEv.id);
+        if (localEv && typeof incomingEv.bookedSeats === "number") {
+          if (localEv.bookedSeats !== incomingEv.bookedSeats) {
+            localEv.bookedSeats = incomingEv.bookedSeats;
+            stateChanged = true;
+          }
+        }
+      });
+      if (stateChanged) {
+        saveEventsToStorage(false);
+      }
+    }
+
+    if (stateChanged) {
+      renderSpotlightBanner();
+      renderEvents();
+      renderPassesList();
+      updatePassesBadge();
+    }
+  }
+
+  // Fetch recent history via poll=1 to catch up on offline data
+  function fetchMissedHistory(showToastFeedback = false) {
+    const pollUrl = `${getHubUrl(syncRoom)}/json?poll=1`;
+    fetch(pollUrl)
+      .then(res => res.text())
+      .then(text => {
+        if (!text) return;
+        // ntfy /json?poll=1 returns NDJSON (one JSON object per line)
+        const lines = text.trim().split("\n");
+        let processedCount = 0;
+        lines.forEach(line => {
+          if (!line.trim()) return;
+          try {
+            const raw = JSON.parse(line);
+            if (raw && raw.message) {
+              handleIncomingSyncPayload(raw.message);
+              processedCount++;
+            }
+          } catch (e) {}
+        });
+        if (showToastFeedback) {
+          showToast(`Cloud synchronization complete!`, "success");
+        }
+      })
+      .catch(err => {
+        if (showToastFeedback) {
+          showToast(`Unable to reach cloud hub right now. Using offline data.`, "info");
+        }
+      });
+  }
+
+  // Switch to another private room code
+  function changeSyncRoom(newRoom) {
+    if (!newRoom) return;
+    const sanitized = newRoom.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+    if (!sanitized) {
+      showToast("Please enter a valid room code (alphanumeric).", "error");
+      return;
+    }
+    syncRoom = sanitized;
+    localStorage.setItem(STORAGE_KEYS.SYNC_ROOM, syncRoom);
+
+    // Update URL query param cleanly without reloading page
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set("room", syncRoom);
+    window.history.replaceState({}, "", currentUrl.toString());
+
+    initRealtimeSync();
+    showToast(`Connected to sync room: "${syncRoom}"`, "success");
+  }
+
+  // Export full backup of passes and custom events
+  function exportBackupJSON() {
+    const backupData = {
+      version: "2.1",
+      exportedAt: new Date().toISOString(),
+      room: syncRoom,
+      events: state.events,
+      passes: state.passes
+    };
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `CampusPulse_Backup_${syncRoom}_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Backup exported successfully as JSON file!", "success");
+  }
+
+  // Import JSON backup file
+  function importBackupJSON(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (!imported) throw new Error("Invalid format");
+
+        let passesAdded = 0;
+        if (Array.isArray(imported.passes)) {
+          const existingIds = new Set(state.passes.map(p => p.id));
+          imported.passes.forEach(p => {
+            if (p && p.id && !existingIds.has(p.id)) {
+              state.passes.push(p);
+              existingIds.add(p.id);
+              passesAdded++;
+            }
+          });
+        }
+
+        if (Array.isArray(imported.events)) {
+          imported.events.forEach(impEv => {
+            const match = state.events.find(e => e.id === impEv.id);
+            if (match && typeof impEv.bookedSeats === "number") {
+              match.bookedSeats = impEv.bookedSeats;
+            }
+          });
+        }
+
+        saveEventsToStorage(true);
+        savePassesToStorage(true);
+
+        renderSpotlightBanner();
+        renderEvents();
+        renderPassesList();
+        updatePassesBadge();
+
+        showToast(`Imported ${passesAdded} passes successfully! Synced across cloud.`, "success");
+      } catch (err) {
+        showToast("Error importing file: Invalid JSON backup format.", "error");
+      }
+    };
+    reader.readAsText(file);
+  }
   function initTheme() {
     const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -743,7 +1092,7 @@
 
     // 3. Issue Booking & Decrement Seat
     targetEvent.bookedSeats += 1;
-    saveEventsToStorage();
+    saveEventsToStorage(false);
 
     const ticketId = `CP-${Math.floor(100000 + Math.random() * 900000)}`;
     const newPass = {
@@ -762,7 +1111,10 @@
     };
 
     state.passes.unshift(newPass);
-    savePassesToStorage();
+    savePassesToStorage(false);
+
+    // Broadcast booking action to all paired devices
+    broadcastSyncAction("BOOK_PASS", { pass: newPass, eventId: targetEvent.id });
 
     // Close booking modal and reset
     closeModal("booking-modal-overlay");
@@ -1198,11 +1550,14 @@
     const ev = state.events.find(e => e.id === pass.eventId);
     if (ev && ev.bookedSeats > 0) {
       ev.bookedSeats -= 1;
-      saveEventsToStorage();
+      saveEventsToStorage(false);
     }
 
     state.passes.splice(passIndex, 1);
-    savePassesToStorage();
+    savePassesToStorage(false);
+
+    // Broadcast cancellation to all devices in the room
+    broadcastSyncAction("CANCEL_PASS", { passId: passId, eventId: pass.eventId });
 
     renderPassesList();
     renderSpotlightBanner();
@@ -1492,6 +1847,93 @@
     });
   }
 
+    // 13. Sync modal and controls event listeners
+    const btnSyncAction = document.getElementById("btn-sync-action");
+    const syncStatusIndicator = document.getElementById("sync-status-indicator");
+    if (btnSyncAction) {
+      btnSyncAction.addEventListener("click", () => {
+        openModal("sync-modal-overlay");
+      });
+    }
+    if (syncStatusIndicator) {
+      syncStatusIndicator.addEventListener("click", () => {
+        openModal("sync-modal-overlay");
+      });
+    }
+
+    const btnSaveRoom = document.getElementById("btn-save-room");
+    const syncRoomInput = document.getElementById("sync-room-input");
+    if (btnSaveRoom && syncRoomInput) {
+      btnSaveRoom.addEventListener("click", () => {
+        changeSyncRoom(syncRoomInput.value);
+      });
+      syncRoomInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          changeSyncRoom(syncRoomInput.value);
+        }
+      });
+    }
+
+    const btnCopySyncLink = document.getElementById("btn-copy-sync-link");
+    const syncLinkInput = document.getElementById("sync-shareable-link-input");
+    if (btnCopySyncLink && syncLinkInput) {
+      btnCopySyncLink.addEventListener("click", () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(syncLinkInput.value).then(() => {
+            showToast("Pairing link copied to clipboard! Open on your other device.", "success");
+          }).catch(() => {
+            syncLinkInput.select();
+            document.execCommand("copy");
+            showToast("Pairing link copied!", "success");
+          });
+        } else {
+          syncLinkInput.select();
+          document.execCommand("copy");
+          showToast("Pairing link copied!", "success");
+        }
+      });
+    }
+
+    const btnForceSync = document.getElementById("btn-force-sync");
+    if (btnForceSync) {
+      btnForceSync.addEventListener("click", () => {
+        fetchMissedHistory(true);
+      });
+    }
+
+    const btnDrawerForceSync = document.getElementById("btn-drawer-force-sync");
+    if (btnDrawerForceSync) {
+      btnDrawerForceSync.addEventListener("click", () => {
+        fetchMissedHistory(true);
+      });
+    }
+
+    const btnExportBackup = document.getElementById("btn-export-backup");
+    const btnDrawerExport = document.getElementById("btn-drawer-export");
+    if (btnExportBackup) btnExportBackup.addEventListener("click", exportBackupJSON);
+    if (btnDrawerExport) btnDrawerExport.addEventListener("click", exportBackupJSON);
+
+    const syncImportInput = document.getElementById("sync-import-file-input");
+    if (syncImportInput) {
+      syncImportInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          importBackupJSON(e.target.files[0]);
+          e.target.value = "";
+        }
+      });
+    }
+
+    const drawerImportInput = document.getElementById("drawer-import-file-input");
+    if (drawerImportInput) {
+      drawerImportInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          importBackupJSON(e.target.files[0]);
+          e.target.value = "";
+        }
+      });
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // PUBLIC EXPOSURE TO GLOBAL WINDOW
   // ---------------------------------------------------------------------------
@@ -1501,14 +1943,19 @@
     openPassesDrawer,
     closePassesDrawer,
     closeModal,
+    openModal,
     viewSpecificPass,
     cancelPass,
     printPass,
-    resetFilters
+    resetFilters,
+    exportBackupJSON,
+    fetchMissedHistory,
+    changeSyncRoom
   };
 
   window.CampusPulse = CampusPulseAPI;
   window.K_PULSE = CampusPulseAPI; // Backward compatibility alias
+  window.NexusHub = CampusPulseAPI;
 
   // ---------------------------------------------------------------------------
   // INITIALIZATION ON DOM READY
@@ -1521,6 +1968,7 @@
     renderEvents();
     startCountdownLoops();
     animateStatsCounter();
+    initRealtimeSync();
   });
 
 })();

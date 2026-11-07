@@ -62,6 +62,19 @@
 
       <!-- Navbar Action Controls -->
       <div class="nav-actions">
+        <!-- Live Cloud Sync Indicator & Room Button -->
+        <div class="sync-status-indicator" id="sync-status-indicator" title="Live Cloud Sync: Initializing...">
+          <span class="sync-status-dot connecting" id="sync-status-dot"></span>
+          <span class="sync-status-text" id="sync-status-text">Connecting</span>
+        </div>
+
+        <button class="btn-sync-action" id="btn-sync-action" title="Cloud Sync Settings & Manual Refresh">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span class="btn-sync-label">Sync</span>
+        </button>
+
         <!-- Quick Search Hotkey Trigger -->
         <button class="btn-search-trigger" id="nav-search-trigger" title="Quick Search (Ctrl + K)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -572,7 +585,121 @@
         <!-- Rendered dynamically -->
       </div>
 
+      <!-- Backup, Restore & Sync Tools Footer -->
+      <div class="drawer-sync-footer">
+        <div class="drawer-sync-row">
+          <button class="btn-drawer-sync" id="btn-drawer-force-sync" title="Force check for incoming cloud updates">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            Sync Now
+          </button>
+          <button class="btn-drawer-sync" id="btn-drawer-export" title="Download backup of all passes and events as JSON">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Backup
+          </button>
+          <label class="btn-drawer-sync btn-drawer-import-label" title="Import JSON backup file">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Import JSON
+            <input type="file" id="drawer-import-file-input" accept=".json,application/json" style="display: none;">
+          </label>
+        </div>
+      </div>
+
     </aside>
+  </div>
+
+  <!-- =========================================================================
+       CLOUD SYNC & DATA MANAGEMENT MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="sync-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sync-modal-title">
+    <div class="modal-box sync-modal-box">
+      <button class="modal-close-btn" onclick="window.CampusPulse.closeModal('sync-modal-overlay')" aria-label="Close dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-header-block">
+        <div class="modal-header-tag">Zero-Config Cloud Mesh</div>
+        <h2 class="modal-heading" id="sync-modal-title">Multi-Device Real-Time Sync</h2>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.35rem;">
+          Connect your laptop, phone, or tablet to the same private room. Any booking, cancellation, or change synchronizes live across all devices instantly without accounts or API keys.
+        </p>
+      </div>
+
+      <div class="sync-settings-card">
+        <div class="sync-room-field-wrap">
+          <label class="form-label" for="sync-room-input">
+            <span>Sync Room Code</span>
+            <span style="color: var(--accent-primary); font-size: 0.75rem;">Share with other devices</span>
+          </label>
+          <div class="sync-input-button-group">
+            <input type="text" class="form-input sync-room-input" id="sync-room-input" placeholder="e.g. campus-mesh-889" autocomplete="off">
+            <button class="btn-primary btn-save-room" id="btn-save-room">Connect Room</button>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.4rem;">
+            Tip: You can also append <code>?room=your_custom_room</code> to your browser URL to automatically pair any phone or laptop.
+          </p>
+        </div>
+
+        <div class="sync-connection-info">
+          <div class="sync-info-row">
+            <span class="sync-info-label">Current Room:</span>
+            <span class="sync-info-value" id="sync-current-room-display">Loading...</span>
+          </div>
+          <div class="sync-info-row">
+            <span class="sync-info-label">Connection Status:</span>
+            <span class="sync-info-value" id="sync-connection-status-display">Connecting...</span>
+          </div>
+          <div class="sync-info-row">
+            <span class="sync-info-label">Shareable Pairing Link:</span>
+            <div class="sync-link-copy-wrap">
+              <input type="text" readonly class="form-input sync-link-input" id="sync-shareable-link-input">
+              <button class="btn-secondary btn-copy-sync-link" id="btn-copy-sync-link">Copy Link</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sync-actions-grid">
+          <button class="btn-primary btn-force-sync" id="btn-force-sync">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            Sync Now (Fetch Missed Events)
+          </button>
+          
+          <div class="sync-file-tools-row">
+            <button class="btn-secondary btn-export-backup" id="btn-export-backup">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export Backup (JSON)
+            </button>
+            <label class="btn-secondary btn-import-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Import (JSON)
+              <input type="file" id="sync-import-file-input" accept=".json,application/json" style="display: none;">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- =========================================================================
@@ -648,7 +775,7 @@
   <!-- =========================================================================
        VANILLA JAVASCRIPT LOGIC LOADER
        ========================================================================= -->
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/data.js?v=2.1"></script>
+  <script src="js/app.js?v=2.1"></script>
 </body>
 </html>
