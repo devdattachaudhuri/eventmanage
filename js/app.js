@@ -758,11 +758,11 @@
             </div>
 
             <div class="spotlight-actions">
-              <button class="btn-primary" onclick="window.NexusHub.openBookingModal('${ev.id}')">
+              <button class="btn-primary" onclick="event.stopPropagation(); window.NexusHub.openBookingModal('${ev.id}')">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
                 Reserve Seat Now
               </button>
-              <button class="btn-secondary" onclick="window.NexusHub.openDetailsModal('${ev.id}')">
+              <button class="btn-secondary" onclick="event.stopPropagation(); window.NexusHub.openDetailsModal('${ev.id}')">
                 Inspect Agenda
               </button>
             </div>
@@ -869,10 +869,10 @@
             </div>
 
             <div class="card-actions-row">
-              <button class="btn-card-secondary" onclick="window.NexusHub.openDetailsModal('${ev.id}')">
+              <button class="btn-card-secondary" onclick="event.stopPropagation(); window.NexusHub.openDetailsModal('${ev.id}')">
                 Inspect Agenda
               </button>
-              <button class="btn-card-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="window.NexusHub.openBookingModal('${ev.id}')">
+              <button class="btn-card-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="event.stopPropagation(); window.NexusHub.openBookingModal('${ev.id}')">
                 ${remainingSeats <= 0 ? 'Sold Out' : 'Book Pass'}
               </button>
             </div>
@@ -971,14 +971,14 @@
           <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">Organized by:</span>
           <span style="font-size: 0.88rem; font-weight: 600;">${escapeHTML(ev.organizer)}</span>
         </div>
-        <button class="btn-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="window.NexusHub.closeModal('details-modal-overlay'); window.NexusHub.openBookingModal('${ev.id}')">
+        <button class="btn-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="event.stopPropagation(); window.NexusHub.closeModal('details-modal-overlay'); window.NexusHub.openBookingModal('${ev.id}')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
           ${remainingSeats <= 0 ? 'Sold Out' : 'Book Your Spot'}
         </button>
       </div>
     `;
 
-    overlay.classList.add("active");
+    overlay.classList.add("active", "open");
     document.body.style.overflow = "hidden";
   }
 
@@ -1021,25 +1021,25 @@
       }
     } catch (e) {}
 
-    overlay.classList.add("active");
+    overlay.classList.add("active", "open");
     document.body.style.overflow = "hidden";
   }
 
   function quickFillBookingForm() {
     const form = document.getElementById("registration-form");
     if (!form) return;
-    const names = ["Aarav Sharma", "Rohan Mehta", "Priya Nair", "Ananya Verma", "Vikram Sen", "Kavya Iyer"];
-    const roles = ["Student Delegate", "Faculty / Researcher", "Invited Guest", "Industry Delegate"];
+    const names = ["Shreyan Mohanty", "Devdatta Chaudhuri", "Aarav Sharma", "Ananya Verma", "Vikram Sen", "Kavya Iyer"];
+    const roles = ["Undergraduate Student", "Postgraduate / PhD", "Faculty / Staff", "External Guest / Industry"];
     const randomName = names[Math.floor(Math.random() * names.length)];
-    const cleanName = randomName.toLowerCase().replace(" ", ".");
+    const cleanName = randomName.toLowerCase().replace(/[^a-z]/g, ".");
     const randomNum = Math.floor(1000 + Math.random() * 9000);
 
     form.elements["fullName"].value = randomName;
     form.elements["email"].value = `${cleanName}${randomNum}@campus.edu`;
-    form.elements["phone"].value = `+91 98${Math.floor(10000000 + Math.random() * 90000000)}`;
-    form.elements["rollNo"].value = `CS2026-${randomNum}`;
-    form.elements["attendeeRole"].value = roles[Math.floor(Math.random() * roles.length)];
-    form.elements["agreeTerms"].checked = true;
+    form.elements["phone"].value = `9876543210`;
+    form.elements["rollNo"].value = `2105${randomNum}`;
+    form.elements["attendeeRole"].value = roles[0];
+    if (form.elements["agreeTerms"]) form.elements["agreeTerms"].checked = true;
 
     // Validate fields visually
     const inputs = [
@@ -1055,13 +1055,13 @@
       if (input) validateField(input);
     });
 
-    showToast("⚡ Quick Demo Profile filled! Click 'Confirm & Generate Pass'.", "success");
+    showToast("⚡ Quick Demo Profile filled! Click 'Confirm Registration'.", "success");
   }
 
   function resetFormErrors() {
     const form = document.getElementById("registration-form");
     if (!form) return;
-    const inputs = form.querySelectorAll(".form-input, .form-select");
+    const inputs = form.querySelectorAll(".reserve-input, .reserve-select, .reserve-textarea, .form-input, .form-select");
     inputs.forEach(i => {
       i.classList.remove("is-valid", "is-invalid");
     });
@@ -1072,11 +1072,11 @@
     });
   }
 
-  // Validation Rules
+  // Validation Rules (Student ID is optional per Screenshot 4)
   const VALIDATION_RULES = {
     fullName: {
       regex: /^[A-Za-z\s.'-]{2,60}$/,
-      errorMessage: "Full name must be at least 2 characters (alphabetic with standard punctuation)."
+      errorMessage: "Full name must be at least 2 characters (alphabetic)."
     },
     email: {
       regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -1084,17 +1084,19 @@
     },
     phone: {
       regex: /^[\+]?[\d\s\-()]{8,20}$/,
-      errorMessage: "Please enter a valid phone number (minimum 8 digits, supports country code)."
+      errorMessage: "Please enter a valid phone number (minimum 8 digits)."
     },
     rollNo: {
+      isOptional: true,
       regex: /^[A-Za-z0-9\-_/.]{2,30}$/,
-      errorMessage: "Institutional ID must be at least 2 characters (alphanumeric, dashes, slashes)."
+      errorMessage: "Student/Employee ID must be valid alphanumeric."
     }
   };
 
   function validateField(inputEl) {
+    if (!inputEl) return true;
     const fieldName = inputEl.name;
-    const value = inputEl.value.trim();
+    const value = (inputEl.value || "").trim();
     const feedbackEl = document.getElementById(`feedback-${fieldName}`);
     const rule = VALIDATION_RULES[fieldName];
 
@@ -1128,6 +1130,13 @@
           return true;
         }
       }
+      return true;
+    }
+
+    if (rule.isOptional && value === "") {
+      inputEl.classList.remove("is-invalid");
+      inputEl.classList.remove("is-valid");
+      if (feedbackEl) feedbackEl.textContent = "";
       return true;
     }
 
@@ -1251,6 +1260,8 @@
     // Re-render
     renderSpotlightBanner();
     renderEvents();
+    renderPassesList();
+    updatePassesBadge();
 
     // Trigger celebration & Display Boarding Pass
     triggerConfetti();
@@ -1570,7 +1581,7 @@
       </div>
     `;
 
-    overlay.classList.add("active");
+    overlay.classList.add("active", "open");
     document.body.style.overflow = "hidden";
 
     // Draw real QR Code onto the canvas
@@ -1599,13 +1610,13 @@
     const overlay = document.getElementById("passes-drawer-overlay");
     if (!overlay) return;
     renderPassesList();
-    overlay.classList.add("active");
+    overlay.classList.add("active", "open");
     document.body.style.overflow = "hidden";
   }
 
   function closePassesDrawer() {
     const overlay = document.getElementById("passes-drawer-overlay");
-    if (overlay) overlay.classList.remove("active");
+    if (overlay) overlay.classList.remove("active", "open");
     document.body.style.overflow = "";
   }
 
@@ -1793,7 +1804,7 @@
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-      modal.classList.add("active");
+      modal.classList.add("active", "open");
       document.body.style.overflow = "hidden";
     }
   }
@@ -1801,9 +1812,9 @@
   function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-      modal.classList.remove("active");
+      modal.classList.remove("active", "open");
     }
-    const activeModals = document.querySelectorAll(".modal-overlay.active, .passes-drawer-overlay.active");
+    const activeModals = document.querySelectorAll(".modal-overlay.active, .modal-overlay.open, .passes-drawer-overlay.active, .passes-drawer-overlay.open");
     if (activeModals.length === 0) {
       document.body.style.overflow = "";
     }
@@ -1961,7 +1972,7 @@
         btnQuickFill.addEventListener("click", quickFillBookingForm);
       }
 
-      const formInputs = regForm.querySelectorAll(".form-input, .form-select");
+      const formInputs = regForm.querySelectorAll(".reserve-input, .reserve-select, .reserve-textarea, .form-input, .form-select");
       formInputs.forEach(input => {
         input.addEventListener("input", () => validateField(input));
         input.addEventListener("blur", () => validateField(input));
@@ -1978,7 +1989,7 @@
     modalOverlays.forEach(overlay => {
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) {
-          overlay.classList.remove("active");
+          overlay.classList.remove("active", "open");
           document.body.style.overflow = "";
         }
       });
