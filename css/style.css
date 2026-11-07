@@ -727,7 +727,15 @@ body {
   box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5);
 }
 
-.hero-blob { display: none; }
+.hero-blob { display: none !important; }
+svg.hero-blob { display: none !important; }
+
+.brand-text-accent {
+  background: linear-gradient(90deg, #00f2fe, #00ff87);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
 
 @media (max-width: 960px) {
   .hero-grid { grid-template-columns: 1fr; gap: 3.5rem; }
