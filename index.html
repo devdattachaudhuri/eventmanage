@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusPulse | Next-Gen Campus Event Discovery & Pass Reservation Platform</title>
+  
+  <!-- SEO & Author Metadata -->
+  <meta name="description" content="CampusPulse is an ultra-modern 3D glassmorphic campus event discovery and digital boarding pass reservation platform authored by Devdatta Chaudhuri.">
+  <meta name="author" content="Devdatta Chaudhuri">
+  <meta name="keywords" content="CampusPulse, Event Management, College Events, Hackathons, Cultural Fest, Tickets, Digital Pass, QR Code, Web Application">
+  
+  <!-- Open Graph Protocol -->
+  <meta property="og:title" content="CampusPulse — Campus Event Discovery & Pass Reservation Platform">
+  <meta property="og:description" content="Explore flagship collegiate hackathons, cultural festivals, esports leagues, and venture conclaves with interactive 3D perspective cards and instant digital boarding passes.">
+  <meta property="og:type" content="website">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'%3E%3C/polygon%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- Ambient Floating Neon Glow Orbs -->
+  <div class="ambient-glow glow-orb-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-orb-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-orb-3" aria-hidden="true"></div>
+  <div class="cyber-grid-overlay" aria-hidden="true"></div>
+
+  <!-- Confetti Celebration Canvas Overlay -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- =========================================================================
+       NAVIGATION BAR
+       ========================================================================= -->
+  <header class="navbar">
+    <div class="container nav-container">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="brand-logo" aria-label="CampusPulse Homepage">
+        <div class="logo-symbol">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <span>Campus<span class="brand-text-accent">Pulse</span></span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links">
+          <li><a href="#events-section" class="nav-link active">Upcoming Events</a></li>
+          <li><a href="#controls-section" class="nav-link">Categories</a></li>
+          <li><a href="#spotlight-section" class="nav-link">Flagship Spotlight</a></li>
+          <li><a href="#about-section" class="nav-link">Platform Highlights</a></li>
+        </ul>
+      </nav>
+
+      <!-- Navbar Action Controls -->
+      <div class="nav-actions">
+        <!-- Quick Search Hotkey Trigger -->
+        <button class="btn-search-trigger" id="nav-search-trigger" title="Quick Search (Ctrl + K)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span style="font-size: 0.8rem; font-weight: 500;">Search</span>
+          <kbd class="kbd-shortcut">Ctrl K</kbd>
+        </button>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button class="btn-theme-toggle" id="btn-theme-toggle" title="Toggle Theme (Dark / Light)" aria-label="Toggle visual theme">
+          <!-- Moon Icon (Shown in light mode) -->
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <!-- Sun Icon (Shown in dark mode) -->
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <!-- "My Passes" Slide-out Drawer Trigger -->
+        <button class="btn-my-passes" id="btn-my-passes" aria-label="Open My Booked Passes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <span>My Passes</span>
+          <span class="passes-badge" id="passes-badge-count">0</span>
+        </button>
+
+        <!-- Mobile Navigation Hamburger -->
+        <button class="btn-mobile-menu" id="btn-mobile-menu" aria-label="Toggle mobile menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <a href="#events-section" class="mobile-nav-link">Upcoming Events</a>
+    <a href="#controls-section" class="mobile-nav-link">Categories & Search</a>
+    <a href="#spotlight-section" class="mobile-nav-link">Flagship Spotlight</a>
+    <a href="#about-section" class="mobile-nav-link">Platform Highlights</a>
+  </div>
+
+  <!-- =========================================================================
+       HERO SECTION (3D GLASSMORPHISM & PARALLAX)
+       ========================================================================= -->
+  <section class="hero-section" id="hero-section">
+    <div class="container">
+      <div class="hero-grid">
+        
+        <!-- Left Hero Text & Live Metrics -->
+        <div class="hero-content">
+          <div class="hero-tag">
+            <div class="hero-pulse-dot"></div>
+            <span>Fall / Winter 2026 Season Live</span>
+          </div>
+
+          <h1 class="hero-title">
+            Discover. Connect. Experience the <span class="gradient-text">Campus Pulse.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Unlock priority admittance to national hackathons, cultural carnivals, varsity sports leagues, and executive venture summits with interactive 3D discovery and verifiable digital boarding passes.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#events-section" class="btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+              </svg>
+              Explore Events
+            </a>
+            <button class="btn-secondary" onclick="window.CampusPulse.openPassesDrawer()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              View My Passes
+            </button>
+          </div>
+
+          <!-- Live Stats Counter Grid -->
+          <div class="hero-stats-grid">
+            <div class="stat-item">
+              <span class="stat-number" data-target="9" data-suffix="+">0</span>
+              <span class="stat-label">Featured Events</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" data-target="2850" data-suffix="+">0</span>
+              <span class="stat-label">Active Attendees</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" data-target="24" data-suffix="">0</span>
+              <span class="stat-label">Partner Societies</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" data-target="12" data-suffix="">0</span>
+              <span class="stat-label">Smart Venues</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 3D Interactive Floating Card -->
+        <div class="hero-card-perspective">
+          <div class="hero-3d-card" id="hero-floating-card">
+            <div class="hero-card-badge card-layer-z1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Featured Trend
+            </div>
+            <div class="hero-card-img-wrap card-layer-z2">
+              <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="CAMPUS-HACK 2026 Showcase">
+            </div>
+            <div class="hero-card-meta card-layer-z1">
+              <span>Nov 25, 2026</span>
+              <span style="color: var(--accent-cyan); font-weight: 700;">36-Hour Hackathon</span>
+            </div>
+            <h3 class="hero-card-title card-layer-z3">CAMPUS-HACK 2026: Autonomous AI & Distributed Cloud</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;" class="card-layer-z1">
+              300+ engineers, $10,000 in grand grants, and executive mentors from world-leading tech labs.
+            </p>
+            <div class="hero-card-footer card-layer-z2">
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">Pass Tier</span>
+                <span style="font-size: 0.88rem; font-weight: 700; color: var(--accent-emerald);">Complimentary</span>
+              </div>
+              <button class="hero-card-btn" onclick="window.CampusPulse.openBookingModal('cp-evt-101')">
+                Instant Reservation &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       FLAGSHIP EVENT SPOTLIGHT BANNER
+       ========================================================================= -->
+  <section class="spotlight-section" id="spotlight-section">
+    <div class="container" id="spotlight-container">
+      <!-- Injected dynamically via js/app.js -->
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       FILTER, SEARCH & SORTING CONTROL CENTER
+       ========================================================================= -->
+  <section class="controls-section" id="controls-section">
+    <div class="container">
+      
+      <div class="section-header">
+        <div class="section-tag">Explore Catalog</div>
+        <h2 class="section-heading">Curated Campus Engagements</h2>
+      </div>
+
+      <div class="controls-card">
+        <!-- Top Row: Search Input, Sorting, View Mode -->
+        <div class="controls-top-row">
+          
+          <!-- Live Real-Time Search Bar -->
+          <div class="search-bar-wrap">
+            <svg class="search-icon-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              class="search-input" 
+              id="search-input" 
+              placeholder="Search by event title, tech stack, venue, or keywords..."
+              aria-label="Search events"
+            >
+            <button class="btn-clear-search" id="btn-clear-search" title="Clear search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Secondary Row: Sort Dropdown & View Mode Switcher -->
+          <div class="controls-secondary">
+            
+            <div class="sort-select-wrap">
+              <select class="sort-select" id="sort-select" aria-label="Sort events">
+                <option value="date">Sort by Date (Earliest First)</option>
+                <option value="popularity">Sort by Popularity (% Seats Booked)</option>
+                <option value="alpha">Sort Alphabetically (A - Z)</option>
+              </select>
+              <svg class="sort-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+
+            <!-- 3D Grid vs Detailed List Mode Switcher -->
+            <div class="view-switcher" role="group" aria-label="View switcher">
+              <button class="btn-view active" id="btn-view-grid" title="3D Grid View" aria-label="Switch to 3D Grid View">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </button>
+              <button class="btn-view" id="btn-view-list" title="Detailed List View" aria-label="Switch to Detailed List View">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="category-pills-row" role="tablist" aria-label="Filter events by category">
+          <button class="btn-pill active" data-category="All" role="tab" aria-selected="true">All Domains</button>
+          <button class="btn-pill" data-category="Technical" role="tab" aria-selected="false">Technical &amp; AI</button>
+          <button class="btn-pill" data-category="Cultural" role="tab" aria-selected="false">Cultural &amp; Arts</button>
+          <button class="btn-pill" data-category="Sports" role="tab" aria-selected="false">Varsity &amp; Esports</button>
+          <button class="btn-pill" data-category="Workshops" role="tab" aria-selected="false">Deep Dives &amp; Labs</button>
+          <button class="btn-pill" data-category="Business" role="tab" aria-selected="false">E-Summit &amp; Venture</button>
+        </div>
+
+      </div>
+
+      <!-- Results Meta Counter Bar -->
+      <div class="results-meta-bar">
+        <span id="results-count">Loading campus events...</span>
+        <span>Keyboard shortcut: Press <kbd class="kbd-shortcut">/</kbd> anytime to search</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       INTERACTIVE 3D EVENT CARDS SECTION
+       ========================================================================= -->
+  <section class="events-section" id="events-section">
+    <div class="container">
+      <div class="events-grid-container" id="events-grid">
+        <!-- Event cards rendered dynamically via js/app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       PLATFORM ARCHITECTURE & HIGHLIGHTS SECTION
+       ========================================================================= -->
+  <section class="spotlight-section" id="about-section" style="padding-top: 1rem; padding-bottom: 4rem;">
+    <div class="container">
+      <div class="spotlight-banner" style="background: var(--bg-surface); padding: 3rem;">
+        <div class="section-tag">Engineering Specifications</div>
+        <h2 style="font-size: 1.85rem; margin-bottom: 1rem;">Zero Dependency Vanilla Architecture</h2>
+        <p style="color: var(--text-secondary); max-width: 850px; line-height: 1.7; margin-bottom: 2rem;">
+          CampusPulse is engineered with precision by <strong>Devdatta Chaudhuri</strong> using strictly vanilla HTML5, modern CSS3, and ES6+ JavaScript. Designed with 3D glassmorphic optics, tactile mouse-tracking perspective transforms, pure Canvas QR generation, and real-time validation without external dependencies.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+          <div style="background: var(--bg-glass-input); border: 1px solid var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+            <div style="color: var(--accent-cyan); font-weight: 700; margin-bottom: 0.35rem;">Pure Canvas QR Generator</div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5;">Built-in Reed-Solomon error correction and Byte Mode encoding drawn directly onto HTML5 Canvas without third-party scripts.</p>
+          </div>
+          <div style="background: var(--bg-glass-input); border: 1px solid var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+            <div style="color: var(--accent-violet); font-weight: 700; margin-bottom: 0.35rem;">3D Perspective Physics</div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5;">Interactive multi-layered depth utilizing CSS preserve-3d, responsive tilt mathematics, and spring easing transitions.</p>
+          </div>
+          <div style="background: var(--bg-glass-input); border: 1px solid var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+            <div style="color: var(--accent-emerald); font-weight: 700; margin-bottom: 0.35rem;">State & Ticket Persistence</div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5;">Instant seat capacity adjustment, duplicate email prevention, and full offline LocalStorage synchronization.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       EVENT DETAILS MODAL DIALOG
+       ========================================================================= -->
+  <div class="modal-overlay" id="details-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="details-modal-title">
+    <div class="modal-box details-modal-box">
+      <button class="modal-close-btn" onclick="window.CampusPulse.closeModal('details-modal-overlay')" aria-label="Close dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div id="details-modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       REGISTRATION MODAL DIALOG (WITH STRICT VALIDATION)
+       ========================================================================= -->
+  <div class="modal-overlay" id="booking-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+    <div class="modal-box registration-modal-box">
+      <button class="modal-close-btn" onclick="window.CampusPulse.closeModal('booking-modal-overlay')" aria-label="Close dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-header-block">
+        <div class="modal-header-tag">Admittance Reservation</div>
+        <h2 class="modal-heading" id="booking-modal-title">Reserve Your Digital Boarding Pass</h2>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
+          Fill in your institutional credentials to generate your encrypted entrance barcode.
+        </p>
+      </div>
+
+      <form id="registration-form" novalidate>
+        <div class="form-grid">
+          
+          <!-- Event Selector Dropdown -->
+          <div class="form-group form-group-full">
+            <label class="form-label" for="reg-event-select">
+              <span>Target Event</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Required</span>
+            </label>
+            <select class="form-select" id="reg-event-select" name="eventId" required>
+              <!-- Populated dynamically -->
+            </select>
+            <div class="form-feedback" id="feedback-eventId"></div>
+          </div>
+
+          <!-- Attendee Full Name -->
+          <div class="form-group">
+            <label class="form-label" for="reg-full-name">
+              <span>Full Name</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Min 3 letters</span>
+            </label>
+            <input 
+              type="text" 
+              class="form-input" 
+              id="reg-full-name" 
+              name="fullName" 
+              placeholder="e.g. John Doe" 
+              autocomplete="name"
+              required
+            >
+            <div class="form-feedback" id="feedback-fullName"></div>
+          </div>
+
+          <!-- Email Address -->
+          <div class="form-group">
+            <label class="form-label" for="reg-email">
+              <span>Institutional / Personal Email</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Verified format</span>
+            </label>
+            <input 
+              type="email" 
+              class="form-input" 
+              id="reg-email" 
+              name="email" 
+              placeholder="e.g. jdoe@university.edu" 
+              autocomplete="email"
+              required
+            >
+            <div class="form-feedback" id="feedback-email"></div>
+          </div>
+
+          <!-- Contact Phone Number -->
+          <div class="form-group">
+            <label class="form-label" for="reg-phone">
+              <span>Phone Number</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Exactly 10 digits</span>
+            </label>
+            <input 
+              type="tel" 
+              class="form-input" 
+              id="reg-phone" 
+              name="phone" 
+              placeholder="e.g. 9876543210" 
+              maxlength="10"
+              autocomplete="tel"
+              required
+            >
+            <div class="form-feedback" id="feedback-phone"></div>
+          </div>
+
+          <!-- Attendee Role -->
+          <div class="form-group">
+            <label class="form-label" for="reg-role">
+              <span>Attendee Classification</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Role</span>
+            </label>
+            <select class="form-select" id="reg-role" name="attendeeRole" required>
+              <option value="Student Delegate" selected>Student Delegate</option>
+              <option value="Faculty / Researcher">Faculty / Researcher</option>
+              <option value="Invited Guest">Invited Guest</option>
+              <option value="Industry Delegate">Industry Delegate</option>
+            </select>
+            <div class="form-feedback" id="feedback-attendeeRole"></div>
+          </div>
+
+          <!-- Institutional ID / Roll Number -->
+          <div class="form-group form-group-full">
+            <label class="form-label" for="reg-roll-no">
+              <span>Roll Number / University ID / Employee Code</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Alphanumeric</span>
+            </label>
+            <input 
+              type="text" 
+              class="form-input" 
+              id="reg-roll-no" 
+              name="rollNo" 
+              placeholder="e.g. CS2024-8890" 
+              required
+            >
+            <div class="form-feedback" id="feedback-rollNo"></div>
+          </div>
+
+          <!-- Agreement Checkbox -->
+          <div class="form-group form-group-full">
+            <label class="checkbox-wrap">
+              <input type="checkbox" id="reg-agree-terms" name="agreeTerms" required>
+              <span>I agree to the Campus Event Code of Conduct and acknowledge that duplicate bookings under the same email will be automatically invalidated.</span>
+            </label>
+            <div class="form-feedback" id="feedback-agreeTerms"></div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-submit-booking">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Confirm Reservation &amp; Generate Boarding Pass
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       DIGITAL BOARDING PASS MODAL (WITH CANVAS QR CODE)
+       ========================================================================= -->
+  <div class="modal-overlay" id="pass-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="pass-modal-title">
+    <div class="modal-box pass-modal-box" id="pass-modal-content">
+      <!-- Generated dynamically via js/app.js -->
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       "MY PASSES" SLIDE-OUT DRAWER
+       ========================================================================= -->
+  <div class="passes-drawer-overlay" id="passes-drawer-overlay">
+    <aside class="passes-drawer" aria-label="My Booked Passes Drawer">
+      
+      <div class="drawer-header">
+        <div class="drawer-title-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <h3 class="drawer-title">My Booked Passes</h3>
+        </div>
+        <button class="modal-close-btn" id="btn-close-drawer" aria-label="Close passes drawer" style="position: static;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-search-wrap">
+        <input 
+          type="text" 
+          class="drawer-search-input" 
+          id="drawer-search-input" 
+          placeholder="Filter your passes by ticket ID or name..."
+          aria-label="Filter my passes"
+        >
+      </div>
+
+      <div class="drawer-passes-list" id="drawer-passes-list">
+        <!-- Rendered dynamically -->
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div>
+          <a href="#" class="brand-logo" style="margin-bottom: 0.75rem;">
+            <div class="logo-symbol">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <span>Campus<span class="brand-text-accent">Pulse</span></span>
+          </a>
+          <p class="footer-brand-desc">
+            The premier 3D glassmorphic campus event discovery and digital ticket reservation system designed for modern university ecosystems.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-links-list">
+            <li><a href="#events-section" class="footer-link">Upcoming Events</a></li>
+            <li><a href="#controls-section" class="footer-link">Domain Categories</a></li>
+            <li><a href="#spotlight-section" class="footer-link">Flagship Spotlight</a></li>
+            <li><a href="#about-section" class="footer-link">System Specifications</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Categories</h4>
+          <ul class="footer-links-list">
+            <li><a href="#controls-section" class="footer-link">AI &amp; Cloud Hackathons</a></li>
+            <li><a href="#controls-section" class="footer-link">Cosmic Cultural Fests</a></li>
+            <li><a href="#controls-section" class="footer-link">Esports &amp; Varsity League</a></li>
+            <li><a href="#controls-section" class="footer-link">Angel Pitch &amp; Venture</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Author &amp; Repository</h4>
+          <ul class="footer-links-list">
+            <li><span style="color: var(--text-secondary); font-size: 0.88rem;">Architect: <strong>Devdatta Chaudhuri</strong></span></li>
+            <li><a href="https://github.com/devdattachaudhuri/eventmanage" target="_blank" rel="noopener noreferrer" class="footer-link" style="display: flex; align-items: center; gap: 0.4rem; color: var(--accent-cyan);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              GitHub Repository &rarr;
+            </a></li>
+            <li><span style="color: var(--text-muted); font-size: 0.8rem;">Open Source MIT License</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-row">
+        <div>
+          &copy; 2026 <strong>CampusPulse</strong>. Developed with &#10084;&#65039; by <strong>Devdatta Chaudhuri</strong>.
+        </div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Security Guidelines</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       VANILLA JAVASCRIPT LOGIC LOADER
+       ========================================================================= -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
