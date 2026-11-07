@@ -21,17 +21,17 @@
     SENDER_ID: "nh_sender_id_v3"
   };
 
-  // Generate or retrieve persistent unique sender ID for this client/device
-  let senderId = localStorage.getItem(STORAGE_KEYS.SENDER_ID);
+  // Generate distinct unique sender ID per tab/session to guarantee multi-tab and multi-device sync
+  let senderId = sessionStorage.getItem("nh_session_sender_id");
   if (!senderId) {
-    senderId = "dev_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now().toString(36);
-    localStorage.setItem(STORAGE_KEYS.SENDER_ID, senderId);
+    senderId = "client_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now().toString(36);
+    sessionStorage.setItem("nh_session_sender_id", senderId);
   }
 
   // Determine active sync room (URL parameter ?room=xyz takes precedence over localStorage)
   const urlParams = new URLSearchParams(window.location.search);
   const roomParam = urlParams.get("room");
-  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM) || "nexushub_mesh_v3";
+  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM) || "kpulse_campus_sync_v1";
   if (roomParam) {
     localStorage.setItem(STORAGE_KEYS.SYNC_ROOM, roomParam);
   }
@@ -162,6 +162,10 @@
     if (modalRoom) {
       modalRoom.textContent = syncRoom;
     }
+    const regRoomDisplay = document.getElementById("reg-room-display");
+    if (regRoomDisplay) {
+      regRoomDisplay.textContent = syncRoom;
+    }
     if (modalRoomInput && document.activeElement !== modalRoomInput) {
       modalRoomInput.value = syncRoom;
     }
@@ -194,6 +198,8 @@
 
       syncEventSource.onopen = () => {
         updateSyncUI("connected", "Live Sync");
+        // Request active state reconciliation from any online peers in the same room
+        broadcastSyncAction("REQUEST_SYNC", {});
       };
 
       syncEventSource.onmessage = (event) => {
@@ -201,7 +207,7 @@
           const raw = JSON.parse(event.data);
           // ntfy.sh messages enclose the body in the 'message' property
           if (raw && raw.message) {
-            handleIncomingSyncPayload(raw.message);
+            handleIncomingSyncPayload(raw.message, false);
           }
         } catch (err) {
           // Ignore keepalives or non-JSON messages
@@ -252,7 +258,27 @@
     });
   }
 
-  function handleIncomingSyncPayload(rawString) {
+  // Pure Web Audio API Synthesizer (Zero audio file dependencies)
+  function playSyncChime() {
+    try {
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtxClass) return;
+      const audioCtx = new AudioCtxClass();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
+      osc.frequency.exponentialRampToValueAtTime(880.0, audioCtx.currentTime + 0.12); // A5
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.22);
+    } catch (e) {}
+  }
+
+  function handleIncomingSyncPayload(rawString, isCatchUp = false) {
     let payload;
     try {
       payload = typeof rawString === "string" ? JSON.parse(rawString) : rawString;
@@ -285,7 +311,10 @@
           stateChanged = true;
         }
       }
-      showToast(`⚡ Real-time: Pass created on another device (${incomingPass.eventTitle})`, "success");
+      if (!isCatchUp) {
+        playSyncChime();
+        showToast(`⚡ Multi-Device Sync: Pass created on another device (${incomingPass.fullName} - ${incomingPass.eventTitle})`, "success");
+      }
     } else if (payload.action === "CANCEL_PASS" && payload.data && payload.data.passId) {
       const targetId = payload.data.passId;
       const passIdx = state.passes.findIndex(p => p.id === targetId);
@@ -300,7 +329,9 @@
           }
         }
         stateChanged = true;
-        showToast(`⚡ Real-time: Pass cancelled from another device`, "info");
+        if (!isCatchUp) {
+          showToast(`⚡ Multi-Device Sync: Pass cancelled from another device`, "info");
+        }
       }
     } else if (payload.action === "SYNC_PASSES" && payload.data && Array.isArray(payload.data.passes)) {
       // Merge unique passes by ID
@@ -331,6 +362,11 @@
       if (stateChanged) {
         saveEventsToStorage(false);
       }
+    } else if (payload.action === "REQUEST_SYNC") {
+      // Another device joined the room: respond with current pass inventory if we have any
+      if (state.passes.length > 0) {
+        broadcastSyncAction("SYNC_PASSES", { passes: state.passes });
+      }
     }
 
     if (stateChanged) {
@@ -356,13 +392,13 @@
           try {
             const raw = JSON.parse(line);
             if (raw && raw.message) {
-              handleIncomingSyncPayload(raw.message);
+              handleIncomingSyncPayload(raw.message, true);
               processedCount++;
             }
           } catch (e) {}
         });
         if (showToastFeedback) {
-          showToast(`Cloud synchronization complete!`, "success");
+          showToast(`Cloud synchronization complete! Synced ${processedCount} updates.`, "success");
         }
       })
       .catch(err => {
@@ -1599,23 +1635,24 @@
     }
 
     listEl.innerHTML = filtered.map(pass => `
-      <div class="booked-pass-card" data-pass-id="${pass.id}">
-        <div class="booked-pass-header">
-          <span class="booked-ticket-code">${escapeHTML(pass.id)}</span>
-          <span style="font-size: 0.72rem; color: var(--accent-emerald); font-weight: 700;">CONFIRMED</span>
+      <div class="ticket-card" data-pass-id="${pass.id}">
+        <div class="ticket-card-main">
+          <h4 class="ticket-card-title">${escapeHTML(pass.eventTitle)}</h4>
+          <div class="ticket-card-meta">
+            <span>🪪 Pass: <strong>${escapeHTML(pass.id)}</strong></span>
+            <span>👤 ${escapeHTML(pass.fullName)}</span>
+          </div>
+          <div class="ticket-card-date">
+            📅 ${escapeHTML(pass.eventDate)}
+          </div>
         </div>
-        <h4 class="booked-event-title">${escapeHTML(pass.eventTitle)}</h4>
-        <div class="booked-meta">
-          <span><strong>Attendee:</strong> ${escapeHTML(pass.fullName)} (${escapeHTML(pass.rollNo)})</span>
-          <span><strong>Date:</strong> ${escapeHTML(pass.eventDate)}</span>
-          <span><strong>Venue:</strong> ${escapeHTML(pass.venue.split(",")[0])}</span>
-        </div>
-        <div class="booked-card-actions">
-          <button class="btn-pass-view" onclick="window.NexusHub.viewSpecificPass('${pass.id}')">
-            View / Print Pass
+        <div class="ticket-card-actions">
+          <button class="btn-view-pass" onclick="window.NexusHub.viewSpecificPass('${pass.id}')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            View Pass
           </button>
-          <button class="btn-pass-cancel" onclick="window.NexusHub.cancelPass('${pass.id}')">
-            Cancel
+          <button class="btn-delete-pass" title="Cancel & Delete Pass" onclick="window.NexusHub.cancelPass('${pass.id}')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           </button>
         </div>
       </div>
@@ -1654,6 +1691,33 @@
     renderSpotlightBanner();
     renderEvents();
     showToast(`Pass ${passId} cancelled. 1 seat restored.`, "info");
+  }
+
+  function clearAllPasses() {
+    if (state.passes.length === 0) {
+      showToast("No active passes to clear.", "info");
+      return;
+    }
+    const confirmed = window.confirm(`Are you sure you want to cancel and clear all ${state.passes.length} passes? Your seats will be restored to the events.`);
+    if (!confirmed) return;
+
+    // Restore seats for all passes
+    state.passes.forEach(pass => {
+      const ev = state.events.find(e => e.id === pass.eventId);
+      if (ev && ev.bookedSeats > 0) {
+        ev.bookedSeats -= 1;
+      }
+      broadcastSyncAction("CANCEL_PASS", { passId: pass.id, eventId: pass.eventId });
+    });
+
+    state.passes = [];
+    savePassesToStorage(false);
+    saveEventsToStorage(false);
+    renderPassesList();
+    renderSpotlightBanner();
+    renderEvents();
+    updatePassesBadge();
+    showToast("All passes cleared and seats restored.", "info");
   }
 
   // ---------------------------------------------------------------------------
@@ -1951,6 +2015,18 @@
     });
 
     // 13. Sync modal and controls event listeners
+    const btnClearAllPasses = document.getElementById("btn-clear-all-passes");
+    if (btnClearAllPasses) {
+      btnClearAllPasses.addEventListener("click", clearAllPasses);
+    }
+
+    const btnOpenRoomSwitcher = document.getElementById("btn-open-room-switcher");
+    if (btnOpenRoomSwitcher) {
+      btnOpenRoomSwitcher.addEventListener("click", () => {
+        openModal("sync-modal-overlay");
+      });
+    }
+
     const btnSyncAction = document.getElementById("btn-sync-action");
     const syncStatusIndicator = document.getElementById("sync-status-indicator");
     if (btnSyncAction) {
@@ -2054,7 +2130,8 @@
     exportBackupJSON,
     fetchMissedHistory,
     changeSyncRoom,
-    quickFillBookingForm
+    quickFillBookingForm,
+    clearAllPasses
   };
 
   window.NexusHub = NexusHubAPI;

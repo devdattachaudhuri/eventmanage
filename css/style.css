@@ -1215,8 +1215,381 @@ svg.hero-blob { display: none !important; }
   box-shadow: 0 4px 15px rgba(255, 94, 58, 0.4);
 }
 
-.btn-fast-fill:active {
-  transform: scale(0.97);
+/* --------------------------------------------------------------------------
+   NAVBAR SCREENSHOT 1 STYLING (LIVE SYNC PILL & MY TICKETS WITH PINK BADGE)
+   -------------------------------------------------------------------------- */
+.sync-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.95rem;
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  border-radius: var(--radius-full) !important;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.sync-status-indicator:hover {
+  background: rgba(16, 185, 129, 0.2) !important;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.sync-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981 !important;
+  box-shadow: 0 0 10px #10B981 !important;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.sync-status-text {
+  font-size: 0.84rem !important;
+  font-weight: 700 !important;
+  color: #10B981 !important;
+  letter-spacing: 0.02em;
+}
+
+.btn-my-passes {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.55rem !important;
+  padding: 0.45rem 1.1rem !important;
+  background: rgba(99, 102, 241, 0.15) !important;
+  border: 1px solid rgba(99, 102, 241, 0.45) !important;
+  border-radius: 12px !important;
+  color: #818CF8 !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+}
+
+.btn-my-passes:hover {
+  background: rgba(99, 102, 241, 0.25) !important;
+  border-color: rgba(99, 102, 241, 0.7) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.3);
+}
+
+.btn-my-passes .passes-badge {
+  background: #EC4899 !important;
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  font-size: 0.78rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   MY EVENT REGISTRATIONS MODAL (MATCHES SCREENSHOT 2 EXACTLY)
+   -------------------------------------------------------------------------- */
+.registrations-modal-box {
+  max-width: 680px !important;
+  width: 94% !important;
+  background: #0E131F !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 20px !important;
+  padding: 2rem !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.12) !important;
+  position: relative;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.reg-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.reg-gradient-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #A855F7, #EC4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(236, 72, 153, 0.35);
+}
+
+.reg-modal-title {
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  margin: 0;
+}
+
+.reg-modal-subtitle {
+  font-size: 0.84rem;
+  color: #94A3B8;
+  margin-top: 0.25rem;
+}
+
+.reg-sync-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.reg-sync-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.reg-sync-indicator-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.reg-sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 10px #10B981;
+  display: inline-block;
+}
+
+.reg-sync-label {
+  color: #10B981;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.reg-room-badge {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.74rem;
+  color: #CBD5E1;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reg-room-badge:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #fff;
+}
+
+.reg-sync-tools-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-reg-tool {
+  background: transparent;
+  border: none;
+  color: #CBD5E1;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn-reg-tool:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.reg-search-wrap {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.reg-search-icon {
+  position: absolute;
+  left: 0.95rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748B;
+  pointer-events: none;
+}
+
+.reg-search-input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.6rem;
+  color: #fff;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.reg-search-input:focus {
+  border-color: #6366F1;
+}
+
+.reg-passes-list {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-right: 0.3rem;
+}
+
+.ticket-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.ticket-card:hover {
+  border-color: rgba(99, 102, 241, 0.45);
+  transform: translateY(-2px);
+  background: rgba(20, 28, 50, 0.75);
+}
+
+.ticket-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  margin-bottom: 0.35rem;
+}
+
+.ticket-card-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #94A3B8;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.ticket-card-date {
+  font-size: 0.78rem;
+  color: #64748B;
+}
+
+.ticket-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.btn-view-pass {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #F1F5F9;
+  border-radius: 10px;
+  padding: 0.48rem 0.95rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s;
+}
+
+.btn-view-pass:hover {
+  background: #6366F1;
+  color: #fff;
+  border-color: #6366F1;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-delete-pass {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #EF4444;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete-pass:hover {
+  background: #EF4444;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.reg-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-clear-passes {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #F87171;
+  border-radius: 10px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s;
+}
+
+.btn-clear-passes:hover {
+  background: #EF4444;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);
+}
+
+.btn-reg-close {
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #F8FAFC;
+  border-radius: 10px;
+  padding: 0.5rem 1.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reg-close:hover {
+  background: #334155;
+  color: #fff;
 }
 
 .card-img-holder {

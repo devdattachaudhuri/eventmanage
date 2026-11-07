@@ -23,7 +23,7 @@
   <link rel="dns-prefetch" href="https://ntfy.sh">
 
   <!-- CSS Stylesheet with cache buster -->
-  <link rel="stylesheet" href="css/style.css?v=4.0">
+  <link rel="stylesheet" href="css/style.css?v=5.0">
   
   <!-- Favicon SVG -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'%3E%3C/polygon%3E%3C/svg%3E">
@@ -69,19 +69,6 @@
 
       <!-- Navbar Action Controls -->
       <div class="nav-actions">
-        <!-- Live Cloud Sync Indicator & Room Button -->
-        <div class="sync-status-indicator" id="sync-status-indicator" title="Live Cloud Sync: Initializing...">
-          <span class="sync-status-dot connecting" id="sync-status-dot"></span>
-          <span class="sync-status-text" id="sync-status-text">Connecting</span>
-        </div>
-
-        <button class="btn-sync-action" id="btn-sync-action" title="Cloud Sync Settings & Manual Refresh">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-          </svg>
-          <span class="btn-sync-label">Sync</span>
-        </button>
-
         <!-- Quick Search Hotkey Trigger -->
         <button class="btn-search-trigger" id="nav-search-trigger" title="Quick Search (Ctrl + K)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -93,12 +80,10 @@
         </button>
 
         <!-- Dark / Light Theme Toggle -->
-        <button class="btn-theme-toggle" id="btn-theme-toggle" title="Toggle Theme (Dark / Light)" aria-label="Toggle visual theme">
-          <!-- Moon Icon (Shown in light mode) -->
+        <button class="btn-theme-toggle" id="btn-theme-toggle" title="Toggle Theme" aria-label="Toggle visual theme">
           <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
-          <!-- Sun Icon (Shown in dark mode) -->
           <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -112,13 +97,19 @@
           </svg>
         </button>
 
-        <!-- "My Passes" Slide-out Drawer Trigger -->
+        <!-- Live Cloud Sync Indicator Pill (Matches Screenshot 1) -->
+        <div class="sync-status-indicator" id="sync-status-indicator" title="Live Cloud Sync: Click for Settings & Pairing Link">
+          <span class="sync-status-dot connected" id="sync-status-dot"></span>
+          <span class="sync-status-text" id="sync-status-text">Live Sync</span>
+        </div>
+
+        <!-- "My Tickets" Button with Pink Circle Badge (Matches Screenshot 1) -->
         <button class="btn-my-passes" id="btn-my-passes" aria-label="Open My Booked Passes">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
           </svg>
-          <span>My Passes</span>
+          <span>My Tickets</span>
           <span class="passes-badge" id="passes-badge-count">0</span>
         </button>
 
@@ -562,71 +553,107 @@
   </div>
 
   <!-- =========================================================================
-       "MY PASSES" SLIDE-OUT DRAWER
+       MY EVENT REGISTRATIONS MODAL (MATCHES USER SCREENSHOT 2)
        ========================================================================= -->
-  <div class="passes-drawer-overlay" id="passes-drawer-overlay">
-    <aside class="passes-drawer" aria-label="My Booked Passes Drawer">
+  <div class="modal-overlay passes-modal-dialog-overlay" id="passes-drawer-overlay" role="dialog" aria-modal="true" aria-labelledby="registrations-modal-title">
+    <div class="modal-box registrations-modal-box">
       
-      <div class="drawer-header">
-        <div class="drawer-title-wrap">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2">
+      <!-- Close Button Top Right -->
+      <button class="modal-close-btn" id="btn-close-drawer" aria-label="Close dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Modal Header with Purple Gradient Ticket Icon -->
+      <div class="reg-modal-header">
+        <div class="reg-gradient-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
           </svg>
-          <h3 class="drawer-title">My Booked Passes</h3>
         </div>
-        <button class="modal-close-btn" id="btn-close-drawer" aria-label="Close passes drawer" style="position: static;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        <div>
+          <h2 class="reg-modal-title" id="registrations-modal-title">My Event Registrations</h2>
+          <p class="reg-modal-subtitle">Manage your booked events synced live across all devices.</p>
+        </div>
       </div>
 
-      <div class="drawer-search-wrap">
-        <input 
-          type="text" 
-          class="drawer-search-input" 
-          id="drawer-search-input" 
-          placeholder="Filter your passes by ticket ID or name..."
-          aria-label="Filter my passes"
-        >
-      </div>
+      <!-- Realtime Sync Status & Tools Card -->
+      <div class="reg-sync-card">
+        <div class="reg-sync-status-row">
+          <div class="reg-sync-indicator-group">
+            <span class="reg-sync-dot"></span>
+            <span class="reg-sync-label">Realtime Sync Active</span>
+          </div>
+          <div class="reg-room-badge" id="btn-open-room-switcher" title="Click to view/change sync room">
+            Room: <strong id="reg-room-display">kpulse_campus_sync_v1</strong>
+          </div>
+        </div>
 
-      <div class="drawer-passes-list" id="drawer-passes-list">
-        <!-- Rendered dynamically -->
-      </div>
-
-      <!-- Backup, Restore & Sync Tools Footer -->
-      <div class="drawer-sync-footer">
-        <div class="drawer-sync-row">
-          <button class="btn-drawer-sync" id="btn-drawer-force-sync" title="Force check for incoming cloud updates">
+        <div class="reg-sync-tools-row">
+          <button class="btn-reg-tool" id="btn-drawer-force-sync" title="Force sync with cloud hub">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
             </svg>
-            Sync Now
+            Sync
           </button>
-          <button class="btn-drawer-sync" id="btn-drawer-export" title="Download backup of all passes and events as JSON">
+          <button class="btn-reg-tool" id="btn-drawer-export" title="Export JSON backup">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
-            Export Backup
+            Backup
           </button>
-          <label class="btn-drawer-sync btn-drawer-import-label" title="Import JSON backup file">
+          <label class="btn-reg-tool btn-reg-restore-label" title="Import JSON backup">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="17 8 12 3 7 8"></polyline>
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
-            Import JSON
+            Restore
             <input type="file" id="drawer-import-file-input" accept=".json,application/json" style="display: none;">
           </label>
         </div>
       </div>
 
-    </aside>
+      <!-- Search Input -->
+      <div class="reg-search-wrap">
+        <svg class="reg-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="reg-search-input" 
+          id="drawer-search-input" 
+          placeholder="Search my registered passes..."
+          aria-label="Filter my passes"
+        >
+      </div>
+
+      <!-- Passes Cards List -->
+      <div class="reg-passes-list" id="drawer-passes-list">
+        <!-- Injected dynamically via renderPassesList() -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="reg-modal-footer">
+        <button class="btn-clear-passes" id="btn-clear-all-passes" title="Delete all stored passes">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear All Passes
+        </button>
+        <button class="btn-reg-close" onclick="window.NexusHub.closePassesDrawer()">
+          Close
+        </button>
+      </div>
+
+    </div>
   </div>
 
   <!-- =========================================================================
@@ -787,7 +814,7 @@
   <!-- =========================================================================
        VANILLA JAVASCRIPT LOGIC LOADER
        ========================================================================= -->
-  <script src="js/data.js?v=4.0"></script>
-  <script src="js/app.js?v=4.0"></script>
+  <script src="js/data.js?v=5.0"></script>
+  <script src="js/app.js?v=5.0"></script>
 </body>
 </html>
