@@ -1,4 +1,4 @@
-# CampusPulse Event Management Platform
+# NexusHub Event Management Platform
 
 > **Author:** Devdatta Chaudhuri  
 > **GitHub Repository:** [https://github.com/devdattachaudhuri/eventmanage](https://github.com/devdattachaudhuri/eventmanage)  
@@ -10,7 +10,7 @@
 
 ## 1. Project Explanation
 
-**CampusPulse** is a production-grade, fully responsive campus event discovery and digital pass reservation platform tailored for university ecosystems, student activity centers, and technical societies. It provides students, researchers, faculty, and industry guests with a centralized gateway to discover, inspect, and register for flagship academic hackathons, cultural festivals, varsity sports tournaments, cybersecurity ranges, and venture pitch conclaves.
+**NexusHub** is a production-grade, fully responsive campus event discovery and digital pass reservation platform tailored for university ecosystems, student activity centers, and technical societies. It provides students, researchers, faculty, and industry guests with a centralized gateway to discover, inspect, and register for flagship academic hackathons, cultural festivals, varsity sports tournaments, cybersecurity ranges, and venture pitch conclaves.
 
 The application operates completely offline and client-side without relying on third-party runtime dependencies, external bundlers (Webpack, Vite), or frontend frameworks (React, Vue). Launching `index.html` in any standard web browser yields an interactive application featuring 3D physics, real-time ticket inventory synchronization, and cryptographic-style digital boarding passes.
 

@@ -1,341 +1,312 @@
 /**
- * CampusPulse Event Management Platform
+ * NexusHub Event Management Platform
  * Author: Devdatta Chaudhuri
  * Repository: https://github.com/devdattachaudhuri/eventmanage
  * 
- * Mock Dataset: Realistic campus events across multiple domains
+ * Production Dataset: Curated, Diverse, High-Impact Collegiate Engagements
  */
 
 const INITIAL_EVENTS = [
   {
-    id: "cp-evt-101",
-    title: "CAMPUS-HACK 2026: 36-Hour National AI & Cloud Hackathon",
+    id: "nh-evt-101",
+    title: "NEURAL-HACK 2026: 36-Hour National Autonomous AI & Edge Computing Conclave",
     category: "Technical",
     featured: true,
-    tagline: "Build the future of autonomous systems and distributed intelligence",
-    date: "November 25, 2026",
-    isoDate: "2026-11-25T09:00:00",
+    tagline: "Architect, build, and deploy next-generation agentic models and edge AI systems",
+    date: "December 04 - 06, 2026",
+    isoDate: "2026-12-04T09:00:00",
     time: "09:00 AM - 09:00 PM (36H)",
-    venue: "APJ Abdul Kalam Grand Auditorium & Innovation Lab Complex",
-    totalSeats: 300,
-    bookedSeats: 264,
-    price: "Free Pass",
-    organizer: "CampusPulse Computing Syndicate & IEEE Student Branch",
-    image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Artificial Intelligence", "Hackathon", "Cloud Native", "Web3", "Cash Prizes"],
-    shortDescription: "The premier collegiate hackathon uniting 300+ elite engineers, builders, and designers competing across GenAI, Web3 infrastructure, and IoT tracks with $10,000 in grand grants.",
-    longDescription: "Step into the most intensive engineering marathon of the year. CAMPUS-HACK 2026 challenges cross-functional teams to conceptualize, architect, and ship production-ready prototypes within 36 uninterrupted hours. Participants receive mentorship from Principal Architects at Google, AWS, and NVIDIA, along with dedicated cloud compute credits, hardware sandbox kits, high-speed fiber connectivity, and round-the-clock catering.",
+    venue: "Turing Advanced Computing Pavilion & High-Performance Computing Cluster",
+    totalSeats: 350,
+    bookedSeats: 298,
+    price: "Free Access",
+    organizer: "NexusHub Computing Syndicate & ACM Student Chapter",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Autonomous Agents", "Edge Computing", "Generative AI", "Rust / WASM", "Cash Prizes"],
+    shortDescription: "Flagship 36-hour national sprint bringing together 350+ elite collegiate builders to architect high-throughput agentic prototypes with $15,000 in direct venture grants.",
+    longDescription: "Step into the nation's premier student engineering hackathon. NEURAL-HACK 2026 challenges cross-functional teams to engineer, validate, and launch real-time autonomous systems within 36 uninterrupted hours. Participants receive dedicated GPU clusters, hardware sensor kits, direct mentorship from Principal Research Scientists at leading AI laboratories, and round-the-clock catering.",
     agenda: [
-      { time: "Day 1 - 08:30 AM", title: "Registration & Hardware Check-in", description: "Badge pickup, swags collection, team matchmaking, and compute cluster onboarding." },
-      { time: "Day 1 - 10:00 AM", title: "Opening Keynote & Problem Statements", description: "Official announcement of industry challenge tracks and evaluation rubrics." },
-      { time: "Day 1 - 12:00 PM", title: "Hacking Sprint Begins", description: "Sprint 1 kicks off with dedicated mentor rounds and architecture validation." },
-      { time: "Day 1 - 08:00 PM", title: "Mid-Way Code Reviews & Tech Demos", description: "Check-in milestone with mentor feedback on Git repositories." },
-      { time: "Day 2 - 08:00 AM", title: "Morning Breakfast & Refuel", description: "Sponsor breakout rooms, developer lightning talks, and VR lounge." },
-      { time: "Day 2 - 04:00 PM", title: "Code Freeze & Pitch Prelims", description: "Final Git commit lock, staging server deployments, and table-top judging." },
-      { time: "Day 2 - 07:30 PM", title: "Grand Finale Demos & Award Gala", description: "Top 8 finalists take the main stage for 3-minute live demos before executive jury." }
+      { time: "Day 1 - 08:30 AM", title: "Hardware Check-in & Cluster Allocation", description: "Collect developer swags, register team repositories, and initialize dedicated GPU compute nodes." },
+      { time: "Day 1 - 10:00 AM", title: "Problem Statements & Architecture Keynote", description: "Unveiling enterprise and social track challenges with evaluation benchmarks." },
+      { time: "Day 1 - 12:00 PM", title: "Hacking Marathon Kickoff", description: "Sprint 1 launches with live architecture validation rounds from staff engineers." },
+      { time: "Day 1 - 08:00 PM", title: "Midpoint Code Check-in & System Benchmarking", description: "Automated latency testing and mentor feedback on GitHub PRs." },
+      { time: "Day 2 - 08:00 AM", title: "Breakfast & Lightning Developer Talks", description: "Hands-on micro-workshops on local LLM quantization and multimodal streaming." },
+      { time: "Day 2 - 03:00 PM", title: "Commit Freeze & Prototype Staging", description: "Production deployments verified on cluster test harnesses." },
+      { time: "Day 2 - 06:30 PM", title: "Grand Final Demos & Awards Ceremony", description: "Top 8 teams pitch live on the main amphitheatre stage to venture jury." }
     ],
     speakers: [
       {
-        name: "Dr. Evelyn Vance",
-        role: "VP of Research, NeuralLabs",
-        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
-        bio: "Pioneering researcher in transformer optimizations and multimodal inference."
-      },
-      {
-        name: "Marcus Chen",
-        role: "Distinguished Engineer, HyperScale Cloud",
+        name: "Dr. Alistair Sterling",
+        role: "Director of Autonomous Systems, QuantumCore",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-        bio: "Kubernetes core contributor and distributed systems architect."
+        bio: "Pioneer in distributed inference and embodied robotics control."
       },
       {
-        name: "Aanya Sharma",
-        role: "Head of Developer Ecosystem, DevVentures",
+        name: "Priyanka Deshmukh",
+        role: "Principal Architect, CloudScale Labs",
         avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
-        bio: "Investor and community strategist championing early-stage university founders."
+        bio: "Specialist in zero-latency gRPC streaming architectures and Kubernetes runtimes."
       }
     ]
   },
   {
-    id: "cp-evt-102",
-    title: "AURA 2026: Cosmic Music & Multi-Genre Cultural Fest",
+    id: "nh-evt-102",
+    title: "SYNERGY SPRINT: National FinTech & Quantitative Trading Summit",
+    category: "Business",
+    featured: false,
+    tagline: "Algorithmic market making, high-frequency execution, and DeFi protocols",
+    date: "December 11, 2026",
+    isoDate: "2026-12-11T10:00:00",
+    time: "10:00 AM - 05:30 PM",
+    venue: "Wall Street Simulation Lab, Executive Management Complex",
+    totalSeats: 180,
+    bookedSeats: 162,
+    price: "Complimentary Pass",
+    organizer: "Finance & Quantitative Economics Society",
+    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Quant Finance", "Algorithmic Trading", "DeFi Protocols", "Risk Modeling"],
+    shortDescription: "An intensive summit covering L2/L3 market microstructure, statistical arbitrage bot engineering in Python, and decentralized automated market makers.",
+    longDescription: "Dive deep into modern financial engineering and market plumbing. Learn how institutional market makers execute millions of trades per second, backtest statistical pairs-trading models against historical tick-by-tick order book data, and simulate decentralized liquidity pools.",
+    agenda: [
+      { time: "10:00 AM", title: "Market Microstructure & Order Book Plumbing", description: "Analyzing order book dynamics, depth charts, bid-ask spread mechanics, and latency arbitrage." },
+      { time: "11:45 AM", title: "Building a Statistical Arbitrage Bot in Python", description: "Cointegration testing, Z-score thresholds, automated risk sizing, and paper execution." },
+      { time: "02:00 PM", title: "DeFi Automated Market Makers & Concentrated Liquidity", description: "Constant product invariants, impermanent loss equations, and flash loan mechanics." },
+      { time: "04:00 PM", title: "Live Paper-Trading Alpha Competition", description: "Compete against peers in a simulated order matching engine with cash rewards for best Sharpe ratio." }
+    ],
+    speakers: [
+      {
+        name: "Vikram Singhania",
+        role: "Chief Quantitative Strategist, AlphaPoint Capital",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+        bio: "Ex-Citadel algorithmic trader specializing in statistical arbitrage and risk modeling."
+      }
+    ]
+  },
+  {
+    id: "nh-evt-103",
+    title: "KINETIC VOX: Inter-Collegiate Indie Symphony & Electronic Arts Festival",
     category: "Cultural",
     featured: false,
-    tagline: "An electrifying neon carnival of music, drama, and digital visual art",
-    date: "December 04, 2026",
-    isoDate: "2026-12-04T17:00:00",
+    tagline: "Immersive multi-genre live music, indie rock bands, and spatial audio installations",
+    date: "December 18, 2026",
+    isoDate: "2026-12-18T17:00:00",
     time: "05:00 PM - 11:30 PM",
-    venue: "Central Open-Air Amphitheatre (OAT)",
-    totalSeats: 1200,
-    bookedSeats: 1110,
-    price: "Student ID Pass",
-    organizer: "Student Cultural Council & Fine Arts Society",
+    venue: "Central Open-Air Amphitheatre & Lakeside Promenade",
+    totalSeats: 1500,
+    bookedSeats: 1340,
+    price: "₹199 (Festival Pass)",
+    organizer: "University Cultural Council & Fine Arts Guild",
     image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80",
-    tags: ["EDM", "Indie Rock", "Visual Arts", "Cosplay", "Food Fiesta"],
-    shortDescription: "Experience an interstellar cultural kaleidoscope featuring headline indie bands, international EDM acts, projection-mapping installations, and campus battle-of-the-bands.",
-    longDescription: "AURA stands as Eastern India's largest annual collegiate cultural festival. Step into a transformed neon dreamscape spanning three dynamic stages: the Stellar Main Stage for headline musicians, the Chroma Dome for acoustic, folk, and classical ensembles, and the Cyber Street for street plays, culinary pop-ups, and interactive laser installations.",
+    tags: ["Live Concert", "Indie Rock", "Spatial Audio", "Visual Mapping", "Night Fest"],
+    shortDescription: "A mesmerizing celebration of sound, light, and performance featuring 8 top university rock and fusion bands followed by headlining EDM and synthwave sets.",
+    longDescription: "KINETIC VOX transforms the campus central amphitheatre into an audiovisual wonderland. Experience live bands performing indie fusion, orchestral rock, and electronic synthwave surrounded by 360-degree holographic laser projection mapping and curated food truck avenues.",
     agenda: [
-      { time: "05:00 PM", title: "Carnival Gates Open", description: "Food trucks, interactive photobooths, and artisanal bazaar stalls open." },
-      { time: "06:00 PM", title: "Battle of the Bands", description: "Top 6 university rock and fusion bands battle for the Golden Plectrum." },
-      { time: "08:00 PM", title: "Symphonic Choreography", description: "Theatrical dance performance by the Zenith Contemporary Dance Troupe." },
-      { time: "09:30 PM", title: "Headline Concert & Laser Spectacular", description: "Live performance by celebrated indie electronic duo 'The Luminary Echo'." }
+      { time: "05:00 PM", title: "Festival Gates & Street Food Bazaar Opens", description: "Experience artisan craft stalls, interactive VR sound stages, and food lanes." },
+      { time: "06:00 PM", title: "Battle of the Bands Championship", description: "Top 8 university bands compete for the prestigious Golden Plectrum trophy." },
+      { time: "08:30 PM", title: "Acoustic Sunset Session", description: "Soulful classical-contemporary fusion by the University Strings Ensemble." },
+      { time: "09:45 PM", title: "Headline Electronic Set & Laser Spectacular", description: "Live performance by celebrated synthwave duo with synchronized aerial drone light show." }
     ],
     speakers: [
       {
-        name: "Rohan Deshmukh",
-        role: "Platinum Music Producer & Sound Designer",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-        bio: "Known for blending traditional ethnic instrumentation with ambient synthwave."
-      },
-      {
-        name: "Kyra Sen",
-        role: "Visual FX Director & Kinetic Light Artist",
+        name: "Arya Sen",
+        role: "Sound Designer & Record Producer",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-        bio: "Curator of stadium-scale generative 3D projection spectacles."
+        bio: "Grammy-nominated acoustic engineer and spatial audio researcher."
       }
     ]
   },
   {
-    id: "cp-evt-103",
-    title: "CYBER-DEFENSE: Red Teaming & Offensive Security Masterclass",
+    id: "nh-evt-104",
+    title: "APEX ROBO-ARENA: Heavyweight Autonomous Combat & Drone Slalom",
+    category: "Technical",
+    featured: false,
+    tagline: "Bulletproof cage combat, spinning blades, and autonomous computer-vision drone racing",
+    date: "January 08 - 09, 2027",
+    isoDate: "2027-01-08T10:00:00",
+    time: "10:00 AM - 06:00 PM",
+    venue: "Main Indoor Sports Complex & Reinforced Steel Arena",
+    totalSeats: 400,
+    bookedSeats: 365,
+    price: "Free Pass",
+    organizer: "Robotics Research Society & Mechatronics Lab",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80",
+    tags: ["RoboWars", "Combat Robotics", "Autonomous Drones", "Computer Vision"],
+    shortDescription: "High-octane collegiate combat robotics battle featuring 30kg remote-controlled and autonomous destruction bots competing inside an armored polycarbonate arena.",
+    longDescription: "Witness mechanical carnage and elite robotics engineering. From spinning drum weapons running at 8,000 RPM to autonomous FPV quadcopters navigating high-speed obstacles via onboard OpenCV neural nets, APEX ROBO-ARENA tests hardware durability and code precision under extreme forces.",
+    agenda: [
+      { time: "10:00 AM", title: "Safety Inspection & Weapon Weigh-in", description: "Pneumatics testing, kill switch verifications, and armor checks." },
+      { time: "11:30 AM", title: "Autonomous Drone Obstacle Time Trials", description: "Optical flow sensor-guided drone navigation through smoke rings." },
+      { time: "02:00 PM", title: "Heavyweight Preliminary Combat Knockouts", description: "3-minute destruction matches in the steel arena." },
+      { time: "05:00 PM", title: "Championship Destruction Rumble", description: "Multi-bot survival brawl for the coveted Titanium Wrench trophy." }
+    ],
+    speakers: [
+      {
+        name: "Prof. Kenneth Meyer",
+        role: "Head of Mechatronics & Autonomous Control",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+        bio: "Specialist in brushless motor control, telemetry protocols, and rapid metal prototyping."
+      }
+    ]
+  },
+  {
+    id: "nh-evt-105",
+    title: "ZERO-DAY: Advanced Offensive Security & Red Team Cyber Range",
     category: "Workshops",
     featured: false,
-    tagline: "Hands-on threat emulation, memory exploitation, and zero-day defense",
-    date: "November 28, 2026",
-    isoDate: "2026-11-28T10:00:00",
-    time: "10:00 AM - 04:30 PM",
-    venue: "Cyber Defense Warfare Range, 4th Floor, Tech Block C",
-    totalSeats: 80,
-    bookedSeats: 74,
-    price: "Seat by Selection",
-    organizer: "Nullcon Campus Chapter & InfoSec Syndicate",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Cybersecurity", "Red Teaming", "Reverse Engineering", "Linux Kernel"],
-    shortDescription: "An intensive hands-on lab workshop taking participants through real-world attack vectors, buffer overflow exploits, Active Directory pivoting, and zero-trust perimeter defense.",
-    longDescription: "Taught by certified offensive security operators, this masterclass drops attendees straight into a simulated air-gapped enterprise network. You will set up command-and-control servers, identify zero-day vulnerabilities in sandboxed kernel modules, and implement defensive telemetry to stop advanced persistent threats.",
+    tagline: "Kernel exploitation, supply chain vulnerability research, and live cloud CTF",
+    date: "January 15, 2027",
+    isoDate: "2027-01-15T09:30:00",
+    time: "09:30 AM - 05:00 PM",
+    venue: "Cyber Defense Warfare Lab, Information Technology Tower",
+    totalSeats: 120,
+    bookedSeats: 112,
+    price: "Free Access",
+    organizer: "NullSector InfoSec & Ethical Hacking Society",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Cybersecurity", "Kernel Exploit", "CTF Contest", "Reverse Engineering"],
+    shortDescription: "A hands-on tactical masterclass dissecting real-world vulnerabilities, memory corruption, return-oriented programming (ROP), and Active Directory attack paths.",
+    longDescription: "Step into an isolated defensive and offensive security sandbox. Instructed by seasoned security analysts, attendees will disassemble vulnerable binary code, engineer reliable exploits that bypass modern OS mitigations, and storm an enterprise network mock-up in a live Capture-the-Flag tournament.",
     agenda: [
-      { time: "10:00 AM", title: "Offensive Mindset & Threat Modeling", description: "Deconstructing modern supply-chain attacks and APT tactics." },
-      { time: "11:30 AM", title: "Live Lab: Buffer Overflow & Shellcoding", description: "Writing memory corruptions, DEP bypasses, and return-oriented programming (ROP)." },
-      { time: "01:30 PM", title: "Network Lateral Movement & Privilege Escalation", description: "Breaching Active Directory domains and abusing Kerberos tickets." },
-      { time: "03:30 PM", title: "Capture The Flag (CTF) Sprint", description: "Individual high-speed challenge with dynamic scoreboard and prize vouchers." }
+      { time: "09:30 AM", title: "Modern Exploit Primitives & Mitigation Bypasses", description: "Circumventing ASLR, DEP, and stack canaries via ROP chains." },
+      { time: "11:30 AM", title: "Hands-on Binary Exploitation Lab", description: "Writing memory corruption exploits using Ghidra, GDB, and pwntools." },
+      { time: "02:00 PM", title: "Active Directory Lateral Movement & Kerberoasting", description: "Extracting credentials and escalating privileges in complex domains." },
+      { time: "03:45 PM", title: "High-Speed Capture-the-Flag Gauntlet", description: "Live cyber range exercise with real-time attack-defense scoreboard." }
     ],
     speakers: [
       {
-        name: "Vikramaditya Roy",
-        role: "Principal Red Teamer, CyGuard Defense",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-        bio: "OSCP, OSCE3, and regular keynote speaker at Black Hat & Defcon."
+        name: "Mira Kasparian",
+        role: "Principal Security Researcher, Sentinel Threat Intelligence",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+        bio: "Disclosed multiple CVEs in hypervisors and container isolation runtimes."
       }
     ]
   },
   {
-    id: "cp-evt-104",
-    title: "TITANS LEAGUE: Inter-Collegiate Esports & Futsal Championship",
+    id: "nh-evt-106",
+    title: "VORTEX 2027: National Collegiate Esports League & LAN Invitational",
     category: "Sports",
     featured: false,
-    tagline: "Where high-octane physical endurance meets apex competitive gaming",
-    date: "December 01, 2026",
-    isoDate: "2026-12-01T08:00:00",
-    time: "08:00 AM - 08:00 PM",
-    venue: "Indoor Stadium & K-Sports Arena",
-    totalSeats: 450,
-    bookedSeats: 320,
-    price: "Registration Free",
-    organizer: "Department of Physical Education & Sports Council",
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Esports", "Valorant", "Futsal", "Athletics", "Tournaments"],
-    shortDescription: "Dual-arena tournament bringing university athletes and competitive esports rosters into head-to-head combat across 5v5 Futsal, Valorant, and Rocket League.",
-    longDescription: "The Titans League bridges physical athleticism with digital gaming excellence. Watch 32 university teams duel in high-velocity 5v5 Futsal on synthetic turf courts, while the Esports Arena features professional 240Hz setups, live shoutcasters, spectator stands, and real-time analytical telemetry.",
+    tagline: "Valorant, CS2, Rocket League, and EA FC tournament with national broadcast",
+    date: "January 22 - 24, 2027",
+    isoDate: "2027-01-22T11:00:00",
+    time: "11:00 AM - 09:00 PM",
+    venue: "Main Arena Esports Stadium & High-Refresh Broadcast Stage",
+    totalSeats: 600,
+    bookedSeats: 520,
+    price: "Free Spectator Pass",
+    organizer: "NexusHub Esports Federation",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Esports", "Valorant", "LAN Tournament", "Cash Pool ₹2,00,000", "Live Casting"],
+    shortDescription: "The university's flagship inter-collegiate gaming festival. 32 qualified varsity teams battle across 3 game titles on low-latency fiber setups with expert live casting.",
+    longDescription: "Experience the thrill of competitive esports at stadium scale. Featuring dedicated 360Hz Alienware tournament rigs, professional broadcast casters, player interview booths, and a community cosplay showcase.",
     agenda: [
-      { time: "08:00 AM", title: "Opening Ceremony & Athlete Oath", description: "Torch relay, team roll-call, and sportsmanship pledge." },
-      { time: "09:30 AM", title: "Futsal League Matches (Pitch A & B)", description: "High-paced 20-minute knockout group rounds." },
-      { time: "01:00 PM", title: "Esports Upper Bracket Semifinals", description: "Valorant best-of-three semi-finals on the main stage." },
-      { time: "05:00 PM", title: "Futsal Grand Final & Halftime Show", description: "Championship match under high-intensity arena floodlights." },
-      { time: "07:00 PM", title: "Trophy Presentation & MVP Awards", description: "Awarding the Titan Cup and individual high-scorer golden boots." }
+      { time: "Day 1 - 11:00 AM", title: "Group Stage Knockouts (Concurrent Streams)", description: "Round-robin matches determining upper and lower bracket seedings." },
+      { time: "Day 2 - 01:00 PM", title: "Upper Bracket Semifinals & Cosplay Walk", description: "Best-of-three series on the center stage with studio analysis." },
+      { time: "Day 3 - 04:00 PM", title: "Grand Final Match & Trophy Ceremony", description: "Championship best-of-five clash followed by distribution of the ₹2,00,000 prize purse." }
     ],
     speakers: [
       {
-        name: "Coach Arjun Nair",
-        role: "National Futsal Coach & FIFA Licensee",
-        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
-        bio: "Former national player committed to grassroots athletic development."
-      },
-      {
-        name: "Siddharth 'Zenith' Ray",
-        role: "Pro Esports Caster & Analyst",
-        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
-        bio: "Official voice of VCT Pacific and South Asian regional esports leagues."
+        name: "Devon Reed",
+        role: "Senior Esports Producer & Commentator",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+        bio: "Casted major international tournaments with over 5 million viewers."
       }
     ]
   },
   {
-    id: "cp-evt-105",
-    title: "E-VENTURE CONCLAVE: Global Angel Pitch & Startup Expo",
+    id: "nh-evt-107",
+    title: "FOUNDER'S FORGE: Student Startup Pitch & Angel Investor Showcase",
     category: "Business",
     featured: false,
-    tagline: "Connecting student visionaries with seed capital, angel networks, and venture funds",
-    date: "December 08, 2026",
-    isoDate: "2026-12-08T09:30:00",
-    time: "09:30 AM - 06:00 PM",
-    venue: "Senate Hall & Executive Convention Center",
-    totalSeats: 200,
-    bookedSeats: 188,
-    price: "Delegate Pass",
-    organizer: "Centre for Innovation & Entrepreneurship (CIE)",
-    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Startups", "Venture Capital", "Angel Pitch", "Networking", "Product Demo"],
-    shortDescription: "A high-stakes entrepreneurship summit featuring 20 curated collegiate startups pitching live to prominent venture capital partners for equity funding and incubator grants.",
-    longDescription: "The E-Venture Conclave accelerates deep-tech and consumer innovations originating from university laboratories into scalable businesses. Founders engage in 1-on-1 pitch speed-dating with tier-1 venture capitalists, attend legal and fundraising workshops, and demo products in the Startup Alley.",
-    agenda: [
-      { time: "09:30 AM", title: "Inaugural Keynote: Zero to Seed Stage", description: "Unlocking product-market fit in hyper-competitive markets." },
-      { time: "11:00 AM", title: "Live Elevator Pitch Battle", description: "Top 20 student ventures deliver 180-second pitches to angel investors." },
-      { time: "01:30 PM", title: "Investor Luncheon & Networking Tables", description: "Curated networking over lunch with venture partners." },
-      { time: "03:00 PM", title: "VC Panel: Navigating SaaS & Hardware Valuations", description: "Interactive fireside chat with partners from Sequoia, Accel, and Blume." },
-      { time: "05:00 PM", title: "Commitment Term Sheet Announcements", description: "Live grant dispatches and term-sheet offers to top 3 startups." }
-    ],
-    speakers: [
-      {
-        name: "Shalini Kapoor",
-        role: "Managing Partner, AlphaX Ventures",
-        avatar: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80",
-        bio: "Veteran early-stage tech investor managing a $120M seed portfolio."
-      },
-      {
-        name: "Tanmay Bhattacharya",
-        role: "Founder & CEO, NexaFleet (Unicorn)",
-        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
-        bio: "Campus alumnus who scaled an AI logistics startup to 14 countries."
-      }
-    ]
-  },
-  {
-    id: "cp-evt-106",
-    title: "QUANTUM NEXT: Hands-On Quantum Computing with Qiskit",
-    category: "Technical",
-    featured: false,
-    tagline: "Manipulating qubits, superposition circuits, and Grover search algorithms",
-    date: "December 12, 2026",
-    isoDate: "2026-12-12T10:00:00",
-    time: "10:00 AM - 05:00 PM",
-    venue: "Advanced Simulation Computing Center, Room 302",
-    totalSeats: 60,
-    bookedSeats: 58,
-    price: "Free Access",
-    organizer: "Quantum Information Science Group & IBM Quantum Academic Partner",
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Quantum Computing", "Qiskit", "Physics", "Algorithms"],
-    shortDescription: "Demystify quantum mechanics through code. Learn quantum circuit simulation, entanglement state preparation, and run quantum algorithms on actual IBM Q cloud hardware.",
-    longDescription: "Move beyond classical bits. This comprehensive technical immersion guides students through the mathematical fundamentals of Hilbert spaces, Bloch spheres, and Bell state creation, culminating in writing real Python circuits deployed to superconducting quantum backends via IBM Quantum cloud APIs.",
-    agenda: [
-      { time: "10:00 AM", title: "From Bits to Qubits: Foundations", description: "Superposition, quantum measurement postulate, and unitary operators." },
-      { time: "11:30 AM", title: "Single and Multi-Qubit Gate Labs", description: "Pauli-X/Y/Z, Hadamard, CNOT, and Phase-shift gates in Qiskit." },
-      { time: "02:00 PM", title: "Quantum Teleportation & Superdense Coding", description: "Constructing and simulating quantum communication protocols." },
-      { time: "03:45 PM", title: "Live Hardware Dispatch to IBM Quantum System One", description: "Submitting error-mitigated job circuits to physical quantum processors." }
-    ],
-    speakers: [
-      {
-        name: "Dr. Alistair MacIntyre",
-        role: "Lead Quantum Physicist, Q-Systems Global",
-        avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
-        bio: "Specialist in fault-tolerant topological quantum error correction."
-      }
-    ]
-  },
-  {
-    id: "cp-evt-107",
-    title: "ROBO-WARS: Autonomous Drone Obstacle & Bot Combat Derby",
-    category: "Technical",
-    featured: false,
-    tagline: "Kinetic metal clashes, autonomous quadcopter swarms, and pneumatic crushers",
-    date: "December 15, 2026",
-    isoDate: "2026-12-15T11:00:00",
-    time: "11:00 AM - 06:30 PM",
-    venue: "Armored Combat Arena, Mechanical Engineering Plaza",
-    totalSeats: 500,
-    bookedSeats: 485,
-    price: "Spectator Pass",
-    organizer: "Robotics Society & Mechatronics Guild",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Robotics", "Drones", "Combat Bots", "Embedded Systems"],
-    shortDescription: "Eastern India's most violent robotic clash. 60kg combat bots armed with spinning titanium discs, flippers, and pneumatic hammers battle inside a polycarbonate cage.",
-    longDescription: "Experience pure mechanical thrill! Along with heavyweight combat matches, the event hosts an autonomous FPV drone time-attack race navigating optical flow gates and laser grids without human joystick inputs.",
-    agenda: [
-      { time: "11:00 AM", title: "Bot Safety Checks & Weapon Weigh-in", description: "Failsafe radio checks, kinetic energy limits, and armor inspection." },
-      { time: "12:30 PM", title: "Autonomous Drone Swarm Slalom", description: "Vision-based obstacle evasion time trials." },
-      { time: "02:30 PM", title: "Heavyweight Combat Preliminary Bouts", description: "3-minute destruction matches inside bulletproof poly-carbonate enclosure." },
-      { time: "05:00 PM", title: "Championship Destruction Derby", description: "Multi-bot survival rumble for the Golden Spark Trophy." }
-    ],
-    speakers: [
-      {
-        name: "Er. Kuntal Banerjee",
-        role: "Robotics Architect & BattleBots Judge",
-        avatar: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=300&q=80",
-        bio: "20-year veteran of combat robotics and autonomous defense drones."
-      }
-    ]
-  },
-  {
-    id: "cp-evt-108",
-    title: "RHYTHM & REELS: Indie Cinema Gala & Live Stage Plays",
-    category: "Cultural",
-    featured: false,
-    tagline: "Celebrating cinematic storytelling, stage drama, and scriptwriting craft",
-    date: "December 19, 2026",
-    isoDate: "2026-12-19T16:00:00",
-    time: "04:00 PM - 10:00 PM",
-    venue: "Main Campus Film Theatre & Blackbox Studio",
-    totalSeats: 350,
-    bookedSeats: 215,
-    price: "Campus Pass",
-    organizer: "Film Society & Dramatic Guild",
-    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Cinema", "Short Films", "Theatre", "Storytelling", "Acting"],
-    shortDescription: "A night of cinematic immersion presenting student-directed short films, live proscenium plays, and script workshops hosted by National Film Award winning artists.",
-    longDescription: "Rhythm & Reels invites lovers of dramatic storytelling to witness poignant contemporary scripts enacted on stage, followed by an official screening selection of 10 student short films judged on cinematography, sound design, and narrative coherence.",
-    agenda: [
-      { time: "04:00 PM", title: "Screenplay Reading & Critique", description: "Table reads of selected original dramatic scripts." },
-      { time: "05:30 PM", title: "Proscenium Play: 'Echoes of Silence'", description: "45-minute original production by the University Dramatics Troupe." },
-      { time: "07:00 PM", title: "Short Film Screening Showcase", description: "Screening of 10 official festival selections in 4K with Dolby Atmos audio." },
-      { time: "09:00 PM", title: "Director Q&A & Award Laurels", description: "Panel discussion with creators and presentation of Best Director Laurel." }
-    ],
-    speakers: [
-      {
-        name: "Ananya Sen Gupta",
-        role: "Film Director & Screenplay Mentor",
-        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-        bio: "Independent filmmaker with official selections at Berlinale and MAMI."
-      }
-    ]
-  },
-  {
-    id: "cp-evt-109",
-    title: "FINTECH FORWARD: Algorithmic Trading & DeFi Summit",
-    category: "Business",
-    featured: false,
-    tagline: "High-frequency strategies, liquidity protocols, and automated risk models",
-    date: "December 22, 2026",
-    isoDate: "2026-12-22T09:00:00",
-    time: "09:00 AM - 05:00 PM",
-    venue: "Finance Lab & Bloomberg Terminal Suite",
+    tagline: "Present your venture prototype directly to angel syndicates and venture capitalists",
+    date: "January 29, 2027",
+    isoDate: "2027-01-29T10:00:00",
+    time: "10:00 AM - 04:30 PM",
+    venue: "Innovation & Technology Business Incubator (TBI) Center",
     totalSeats: 150,
-    bookedSeats: 142,
-    price: "Student Pass",
-    organizer: "School of Management & Quantitative Finance Club",
-    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Fintech", "Algorithmic Trading", "Quantitative Finance", "DeFi", "Python"],
-    shortDescription: "Learn how quant hedge funds and automated market makers build low-latency trading engines, statistical arbitrage models, and decentralized liquidity pools.",
-    longDescription: "Dive into quantitative finance. Through live Bloomberg terminal demos and Python Jupyter notebook backtesting, participants explore market microstructure, order book dynamics, statistical pairs trading, and smart contract protocol liquidity engineering.",
+    bookedSeats: 132,
+    price: "Free Registration",
+    organizer: "NexusHub Entrepreneurship Cell & Alumni Venture Network",
+    image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Startups", "Venture Capital", "Angel Pitch", "Incubation Grants"],
+    shortDescription: "Top 16 shortlisted campus startups deliver 5-minute pitches followed by live Q&A with venture partners from top funds for direct equity-free seed grants.",
+    longDescription: "Founder's Forge is where collegiate builders turn prototypes into funded companies. Connect with angel investors, learn how to negotiate seed term sheets, and network with university founders who have built venture-backed companies.",
     agenda: [
-      { time: "09:00 AM", title: "Order Book Dynamics & Market Microstructure", description: "L2/L3 data streams, bid-ask spread math, and latency arbitrage." },
-      { time: "11:00 AM", title: "Building a Mean-Reverting Pairs Trading Bot in Python", description: "Cointegration testing, Z-score thresholds, and automated risk sizing." },
-      { time: "01:30 PM", title: "Automated Market Makers & Constant Product Invariants", description: "Deconstructing Uniswap v3/v4 concentrated liquidity mechanisms." },
-      { time: "03:30 PM", title: "Live Paper-Trading Challenge", description: "Real-time simulated market test with monetary prizes for highest Sharpe ratio." }
+      { time: "10:00 AM", title: "Opening Address: The 2027 Early-Stage Playbook", description: "Navigating AI valuations, enterprise pilots, and investor expectations." },
+      { time: "11:15 AM", title: "Batch 1 Live Pitch Presentations", description: "8 enterprise and B2B SaaS teams deliver rapid pitches." },
+      { time: "01:30 PM", title: "Investor Lunch & Prototype Demo Booths", description: "Informal networking and live product walkthroughs." },
+      { time: "03:00 PM", title: "Batch 2 Pitches & Term Sheet Announcements", description: "Consumer tech, hardware, and grant allocations." }
     ],
     speakers: [
       {
-        name: "Prateek Singhania",
-        role: "Senior Quantitative Researcher, Apex Alpha Capital",
+        name: "Siddharth Nambiar",
+        role: "General Partner, Nexus Venture Collective",
         avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-        bio: "Specializing in high-frequency statistical arbitrage and algorithmic order routing."
+        bio: "Invested in over 40 early-stage tech companies across deeptech and SaaS."
+      }
+    ]
+  },
+  {
+    id: "nh-evt-108",
+    title: "DESIGN DISRUPT: Generative UI, Spatial Computing & Motion Systems",
+    category: "Workshops",
+    featured: false,
+    tagline: "Craft modern interface micro-interactions, 3D WebGL scenes, and Figma design tokens",
+    date: "February 05, 2027",
+    isoDate: "2027-02-05T13:30:00",
+    time: "01:30 PM - 06:30 PM",
+    venue: "Media Arts & Human-Computer Interaction Lab, Campus 7",
+    totalSeats: 90,
+    bookedSeats: 78,
+    price: "Free Access",
+    organizer: "Interactive Media & Product Design Society",
+    image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80",
+    tags: ["UI/UX Design", "Figma", "WebGL", "Motion Design", "Design Systems"],
+    shortDescription: "A hands-on masterclass for digital product designers and creative developers exploring fluid physics, spatial UX patterns, and scalable design token architectures.",
+    longDescription: "Break beyond mundane templates. Learn how leading design studios craft viral interfaces using spring physics, custom shaders in Three.js, accessibility-compliant color contrast models, and component state machines.",
+    agenda: [
+      { time: "01:30 PM", title: "The Anatomy of a Modern Design System", description: "Multi-platform design tokens, semantic color mappings, and auto-layout mechanics." },
+      { time: "03:00 PM", title: "Interactive Prototyping with Spring Physics", description: "Building micro-interactions that feel tangible using Framer and vanilla CSS transforms." },
+      { time: "04:45 PM", title: "Introduction to Shaders & WebGL for UI", description: "Creating ambient background meshes and reactive glass textures." }
+    ],
+    speakers: [
+      {
+        name: "Chloe Dupont",
+        role: "Design Director, Studio Lumina",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+        bio: "Recipient of multiple Awwwards and Apple Design Award nominations."
+      }
+    ]
+  },
+  {
+    id: "nh-evt-109",
+    title: "TITAN CUP: National Inter-Collegiate 5v5 Basketball Championship & Dunk Derby",
+    category: "Sports",
+    featured: false,
+    tagline: "High-flying varsity basketball championship, 3-point shootout, and half-time dunk exhibition",
+    date: "February 12 - 14, 2027",
+    isoDate: "2027-02-12T16:00:00",
+    time: "04:00 PM - 09:30 PM",
+    venue: "Indoor Stadium Arena & Central Hardwood Court",
+    totalSeats: 1200,
+    bookedSeats: 1045,
+    price: "Free Student Admittance",
+    organizer: "Varsity Athletics Board & Physical Education Department",
+    image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Basketball", "Varsity League", "Dunk Contest", "3-Point Shootout", "College Sports"],
+    shortDescription: "The zenith of campus sports. 16 top university basketball squads clash on the hardwood in a high-intensity single-elimination tournament with national scouts.",
+    longDescription: "Feel the hardwood thunder as the nation's premier student-athletes battle for collegiate basketball supremacy. Featuring state-of-the-art shot clock telemetry, multi-camera arena jumbotrons, live mascot entertainment, and the exhilarating All-Star Halftime Dunk Derby with celebrity judges.",
+    agenda: [
+      { time: "Day 1 - 04:00 PM", title: "Opening Ceremonies & Quarterfinal Matches", description: "Team tip-offs across two concurrent courts with live pep band performances." },
+      { time: "Day 2 - 05:30 PM", title: "National 3-Point Shootout & Semifinals", description: "Top perimeter shooters contest the 60-second rapid-fire money-ball rack challenge." },
+      { time: "Day 3 - 06:30 PM", title: "All-Star Dunk Exhibition & Grand Championship", description: "High-flying rim-rattling dunks evaluated by guest judges followed by the title match and ring presentation." }
+    ],
+    speakers: [
+      {
+        name: "Coach Rajesh Vardhan",
+        role: "Director of Varsity Athletics & Former National Coach",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+        bio: "Guided university squads to 6 consecutive national university sports championships."
       }
     ]
   }

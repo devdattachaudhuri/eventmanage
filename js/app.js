@@ -1,5 +1,5 @@
 /**
- * CampusPulse Event Management Web Application
+ * NexusHub Event Management Web Application
  * Author: Devdatta Chaudhuri
  * Repository: https://github.com/devdattachaudhuri/eventmanage
  * 
@@ -14,11 +14,11 @@
   // STATE MANAGEMENT & LOCAL STORAGE
   // ---------------------------------------------------------------------------
   const STORAGE_KEYS = {
-    EVENTS: "cp_events_v1",
-    PASSES: "cp_passes_v1",
-    THEME: "cp_theme",
-    SYNC_ROOM: "cp_sync_room_v1",
-    SENDER_ID: "cp_sender_id_v1"
+    EVENTS: "nh_events_v2",
+    PASSES: "nh_passes_v2",
+    THEME: "nh_theme_v2",
+    SYNC_ROOM: "nh_sync_room_v2",
+    SENDER_ID: "nh_sender_id_v2"
   };
 
   // Generate or retrieve persistent unique sender ID for this client/device
@@ -54,17 +54,43 @@
    * Initialize or retrieve state from LocalStorage
    */
   function initState() {
-    // 1. Events State
+    // Purge legacy obsolete storage keys from early prototypes
+    localStorage.removeItem("cp_events_v1");
+    localStorage.removeItem("cp_passes_v1");
+
+    const blacklistedSignatures = [
+      "innovatex", "harmonics", "robotics workshop", "cyberclash",
+      "designcraft", "ventureforge", "glowrun", "robovanguard", "framed",
+      "campushack", "campus-hack"
+    ];
+
+    // 1. Events State with anti-stale validation
     const savedEvents = localStorage.getItem(STORAGE_KEYS.EVENTS);
+    let validEvents = null;
+
     if (savedEvents) {
       try {
-        state.events = JSON.parse(savedEvents);
+        const parsed = JSON.parse(savedEvents);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const hasStaleOrBlacklisted = parsed.some(ev => {
+            const t = (ev.title || "").toLowerCase();
+            const id = (ev.id || "");
+            return !id.startsWith("nh-") || blacklistedSignatures.some(sig => t.includes(sig));
+          });
+          if (!hasStaleOrBlacklisted) {
+            validEvents = parsed;
+          }
+        }
       } catch (e) {
-        state.events = [...INITIAL_EVENTS];
+        validEvents = null;
       }
+    }
+
+    if (validEvents) {
+      state.events = validEvents;
     } else {
-      state.events = [...INITIAL_EVENTS];
-      saveEventsToStorage();
+      state.events = typeof INITIAL_EVENTS !== "undefined" ? JSON.parse(JSON.stringify(INITIAL_EVENTS)) : [];
+      saveEventsToStorage(false);
     }
 
     // 2. Passes State
@@ -212,7 +238,7 @@
       method: "POST",
       body: messageString,
       headers: {
-        "Title": "CampusPulse Sync",
+        "Title": "NexusHub Sync",
         "Priority": "low"
       }
     }).catch(err => {
@@ -373,7 +399,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `CampusPulse_Backup_${syncRoom}_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `NexusHub_Backup_${syncRoom}_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -690,11 +716,11 @@
             </div>
 
             <div class="spotlight-actions">
-              <button class="btn-primary" onclick="window.CampusPulse.openBookingModal('${ev.id}')">
+              <button class="btn-primary" onclick="window.NexusHub.openBookingModal('${ev.id}')">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
                 Reserve Seat Now
               </button>
-              <button class="btn-secondary" onclick="window.CampusPulse.openDetailsModal('${ev.id}')">
+              <button class="btn-secondary" onclick="window.NexusHub.openDetailsModal('${ev.id}')">
                 Inspect Agenda
               </button>
             </div>
@@ -725,7 +751,7 @@
           <div class="empty-icon">🔍</div>
           <h3>No Matching Events Discovered</h3>
           <p>Try modifying your keyword query or switching the category filter.</p>
-          <button class="btn-secondary" style="margin-top: 1.5rem;" onclick="window.CampusPulse.resetFilters()">
+          <button class="btn-secondary" style="margin-top: 1.5rem;" onclick="window.NexusHub.resetFilters()">
             Reset All Filters
           </button>
         </div>
@@ -801,10 +827,10 @@
             </div>
 
             <div class="card-actions-row">
-              <button class="btn-card-secondary" onclick="window.CampusPulse.openDetailsModal('${ev.id}')">
+              <button class="btn-card-secondary" onclick="window.NexusHub.openDetailsModal('${ev.id}')">
                 Inspect Agenda
               </button>
-              <button class="btn-card-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="window.CampusPulse.openBookingModal('${ev.id}')">
+              <button class="btn-card-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="window.NexusHub.openBookingModal('${ev.id}')">
                 ${remainingSeats <= 0 ? 'Sold Out' : 'Book Pass'}
               </button>
             </div>
@@ -903,7 +929,7 @@
           <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">Organized by:</span>
           <span style="font-size: 0.88rem; font-weight: 600;">${escapeHTML(ev.organizer)}</span>
         </div>
-        <button class="btn-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="window.CampusPulse.closeModal('details-modal-overlay'); window.CampusPulse.openBookingModal('${ev.id}')">
+        <button class="btn-primary" ${remainingSeats <= 0 ? 'disabled' : ''} onclick="window.NexusHub.closeModal('details-modal-overlay'); window.NexusHub.openBookingModal('${ev.id}')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
           ${remainingSeats <= 0 ? 'Sold Out' : 'Book Your Spot'}
         </button>
@@ -1094,7 +1120,7 @@
     targetEvent.bookedSeats += 1;
     saveEventsToStorage(false);
 
-    const ticketId = `CP-${Math.floor(100000 + Math.random() * 900000)}`;
+    const ticketId = `NH-${Math.floor(100000 + Math.random() * 900000)}`;
     const newPass = {
       id: ticketId,
       eventId: targetEvent.id,
@@ -1381,7 +1407,7 @@
       <div class="boarding-pass-ticket" id="printable-boarding-pass">
         <div class="ticket-header">
           <div>
-            <div class="ticket-brand">CAMPUSPULSE AIR-PASS</div>
+            <div class="ticket-brand">NEXUSHUB AIR-PASS</div>
             <div style="font-size: 0.75rem; opacity: 0.9;">OFFICIAL EVENT ENTRANCE ADMITTANCE</div>
           </div>
           <div class="ticket-status-pill">VERIFIED PASS</div>
@@ -1433,11 +1459,11 @@
       </div>
 
       <div class="ticket-actions-bar">
-        <button class="btn-print-pass" onclick="window.CampusPulse.printPass()">
+        <button class="btn-print-pass" onclick="window.NexusHub.printPass()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
           Print / Save Pass (PDF)
         </button>
-        <button class="btn-secondary" style="border-radius: var(--radius-full); padding: 0.8rem 1.5rem;" onclick="window.CampusPulse.closeModal('pass-modal-overlay')">
+        <button class="btn-secondary" style="border-radius: var(--radius-full); padding: 0.8rem 1.5rem;" onclick="window.NexusHub.closeModal('pass-modal-overlay')">
           Close
         </button>
       </div>
@@ -1449,7 +1475,7 @@
     // Draw real QR Code onto the canvas
     const canvas = document.getElementById("ticket-canvas-qr");
     if (canvas) {
-      const qrPayload = `CAMPUSPULSE:${pass.id}:${pass.rollNo}:${pass.fullName}:${pass.eventId}`;
+      const qrPayload = `NEXUSHUB:${pass.id}:${pass.rollNo}:${pass.fullName}:${pass.eventId}`;
       QR.drawToCanvas(canvas, qrPayload, 4);
     }
   }
@@ -1520,10 +1546,10 @@
           <span><strong>Venue:</strong> ${escapeHTML(pass.venue.split(",")[0])}</span>
         </div>
         <div class="booked-card-actions">
-          <button class="btn-pass-view" onclick="window.CampusPulse.viewSpecificPass('${pass.id}')">
+          <button class="btn-pass-view" onclick="window.NexusHub.viewSpecificPass('${pass.id}')">
             View / Print Pass
           </button>
-          <button class="btn-pass-cancel" onclick="window.CampusPulse.cancelPass('${pass.id}')">
+          <button class="btn-pass-cancel" onclick="window.NexusHub.cancelPass('${pass.id}')">
             Cancel
           </button>
         </div>
@@ -1937,7 +1963,7 @@
   // ---------------------------------------------------------------------------
   // PUBLIC EXPOSURE TO GLOBAL WINDOW
   // ---------------------------------------------------------------------------
-  const CampusPulseAPI = {
+  const NexusHubAPI = {
     openBookingModal,
     openDetailsModal,
     openPassesDrawer,
@@ -1953,9 +1979,9 @@
     changeSyncRoom
   };
 
-  window.CampusPulse = CampusPulseAPI;
-  window.K_PULSE = CampusPulseAPI; // Backward compatibility alias
-  window.NexusHub = CampusPulseAPI;
+  window.NexusHub = NexusHubAPI;
+  window.K_PULSE = NexusHubAPI; // Backward compatibility alias
+  window.NexusHub = NexusHubAPI;
 
   // ---------------------------------------------------------------------------
   // INITIALIZATION ON DOM READY
