@@ -2159,7 +2159,8 @@
     fetchMissedHistory,
     changeSyncRoom,
     quickFillBookingForm,
-    clearAllPasses
+    clearAllPasses,
+    showToast
   };
 
   window.NexusHub = NexusHubAPI;
