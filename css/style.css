@@ -418,9 +418,14 @@ body {
 }
 
 .mobile-nav-drawer {
-  display: none;
+  display: none !important;
+}
+.mobile-nav-drawer.open {
+  display: flex !important;
   position: fixed;
-  top: 72px; left: 0; right: 0;
+  top: 72px;
+  left: 0;
+  right: 0;
   background: var(--bg-deep);
   border-bottom: 1px solid var(--border-subtle);
   z-index: 490;
@@ -428,7 +433,6 @@ body {
   padding: 1.5rem;
   gap: 0.5rem;
 }
-.mobile-nav-drawer.open { display: flex; }
 
 .mobile-nav-link {
   color: var(--text-primary);
