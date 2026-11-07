@@ -15,8 +15,15 @@
   <meta property="og:description" content="Explore flagship collegiate hackathons, cultural festivals, esports leagues, and venture conclaves with interactive 3D perspective cards and instant digital boarding passes.">
   <meta property="og:type" content="website">
   
+  <!-- High-Performance Preconnects & Resource Hints -->
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://ntfy.sh">
+
   <!-- CSS Stylesheet with cache buster -->
-  <link rel="stylesheet" href="css/style.css?v=3.5">
+  <link rel="stylesheet" href="css/style.css?v=4.0">
   
   <!-- Favicon SVG -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'%3E%3C/polygon%3E%3C/svg%3E">
@@ -410,7 +417,12 @@
       </button>
 
       <div class="modal-header-block">
-        <div class="modal-header-tag">Admittance Reservation</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <div class="modal-header-tag">Admittance Reservation</div>
+          <button type="button" class="btn-fast-fill" id="btn-quick-fill" title="Instant 1-Click Demo Fill">
+            ⚡ Quick Auto-Fill
+          </button>
+        </div>
         <h2 class="modal-heading" id="booking-modal-title">Reserve Your Digital Boarding Pass</h2>
         <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
           Fill in your institutional credentials to generate your encrypted entrance barcode.
@@ -472,15 +484,15 @@
           <div class="form-group">
             <label class="form-label" for="reg-phone">
               <span>Phone Number</span>
-              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Exactly 10 digits</span>
+              <span style="color: var(--accent-cyan); font-size: 0.75rem;">* Min 8 digits</span>
             </label>
             <input 
               type="tel" 
               class="form-input" 
               id="reg-phone" 
               name="phone" 
-              placeholder="e.g. 9876543210" 
-              maxlength="10"
+              placeholder="e.g. +91 9876543210" 
+              maxlength="20"
               autocomplete="tel"
               required
             >
@@ -775,7 +787,7 @@
   <!-- =========================================================================
        VANILLA JAVASCRIPT LOGIC LOADER
        ========================================================================= -->
-  <script src="js/data.js?v=3.5"></script>
-  <script src="js/app.js?v=3.5"></script>
+  <script src="js/data.js?v=4.0"></script>
+  <script src="js/app.js?v=4.0"></script>
 </body>
 </html>

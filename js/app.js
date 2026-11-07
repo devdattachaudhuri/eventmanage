@@ -970,8 +970,56 @@
 
     populateEventSelect(eventId);
     resetFormErrors();
+
+    // Auto-populate saved profile if previously booked on this device
+    try {
+      const savedProfile = JSON.parse(localStorage.getItem("nh_user_profile") || "null");
+      const form = document.getElementById("registration-form");
+      if (savedProfile && form) {
+        if (savedProfile.fullName && !form.elements["fullName"].value) form.elements["fullName"].value = savedProfile.fullName;
+        if (savedProfile.email && !form.elements["email"].value) form.elements["email"].value = savedProfile.email;
+        if (savedProfile.phone && !form.elements["phone"].value) form.elements["phone"].value = savedProfile.phone;
+        if (savedProfile.rollNo && !form.elements["rollNo"].value) form.elements["rollNo"].value = savedProfile.rollNo;
+        if (savedProfile.attendeeRole && form.elements["attendeeRole"]) form.elements["attendeeRole"].value = savedProfile.attendeeRole;
+        if (form.elements["agreeTerms"]) form.elements["agreeTerms"].checked = true;
+      }
+    } catch (e) {}
+
     overlay.classList.add("active");
     document.body.style.overflow = "hidden";
+  }
+
+  function quickFillBookingForm() {
+    const form = document.getElementById("registration-form");
+    if (!form) return;
+    const names = ["Aarav Sharma", "Rohan Mehta", "Priya Nair", "Ananya Verma", "Vikram Sen", "Kavya Iyer"];
+    const roles = ["Student Delegate", "Faculty / Researcher", "Invited Guest", "Industry Delegate"];
+    const randomName = names[Math.floor(Math.random() * names.length)];
+    const cleanName = randomName.toLowerCase().replace(" ", ".");
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+
+    form.elements["fullName"].value = randomName;
+    form.elements["email"].value = `${cleanName}${randomNum}@campus.edu`;
+    form.elements["phone"].value = `+91 98${Math.floor(10000000 + Math.random() * 90000000)}`;
+    form.elements["rollNo"].value = `CS2026-${randomNum}`;
+    form.elements["attendeeRole"].value = roles[Math.floor(Math.random() * roles.length)];
+    form.elements["agreeTerms"].checked = true;
+
+    // Validate fields visually
+    const inputs = [
+      form.elements["fullName"],
+      form.elements["email"],
+      form.elements["phone"],
+      form.elements["eventId"],
+      form.elements["attendeeRole"],
+      form.elements["rollNo"],
+      form.elements["agreeTerms"]
+    ];
+    inputs.forEach(input => {
+      if (input) validateField(input);
+    });
+
+    showToast("⚡ Quick Demo Profile filled! Click 'Confirm & Generate Pass'.", "success");
   }
 
   function resetFormErrors() {
@@ -991,20 +1039,20 @@
   // Validation Rules
   const VALIDATION_RULES = {
     fullName: {
-      regex: /^[A-Za-z\s]{3,50}$/,
-      errorMessage: "Full name must be at least 3 letters (alphabetic characters only)."
+      regex: /^[A-Za-z\s.'-]{2,60}$/,
+      errorMessage: "Full name must be at least 2 characters (alphabetic with standard punctuation)."
     },
     email: {
       regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      errorMessage: "Please enter a valid academic/personal email address."
+      errorMessage: "Please enter a valid personal or institutional email address."
     },
     phone: {
-      regex: /^\d{10}$/,
-      errorMessage: "Phone number must be exactly 10 numeric digits."
+      regex: /^[\+]?[\d\s\-()]{8,20}$/,
+      errorMessage: "Please enter a valid phone number (minimum 8 digits, supports country code)."
     },
     rollNo: {
-      regex: /^[A-Za-z0-9\-_]{4,20}$/,
-      errorMessage: "Institutional ID must be 4-20 alphanumeric characters."
+      regex: /^[A-Za-z0-9\-_/.]{2,30}$/,
+      errorMessage: "Institutional ID must be at least 2 characters (alphanumeric, dashes, slashes)."
     }
   };
 
@@ -1141,6 +1189,17 @@
       rollNo: rollNo,
       issuedAt: new Date().toISOString()
     };
+
+    // Save profile for instant future 1-click bookings
+    try {
+      localStorage.setItem("nh_user_profile", JSON.stringify({
+        fullName,
+        email,
+        phone,
+        rollNo,
+        attendeeRole: role
+      }));
+    } catch (e) {}
 
     state.passes.unshift(newPass);
     savePassesToStorage(false);
@@ -1833,6 +1892,11 @@
     if (regForm) {
       regForm.addEventListener("submit", handleFormSubmit);
 
+      const btnQuickFill = document.getElementById("btn-quick-fill");
+      if (btnQuickFill) {
+        btnQuickFill.addEventListener("click", quickFillBookingForm);
+      }
+
       const formInputs = regForm.querySelectorAll(".form-input, .form-select");
       formInputs.forEach(input => {
         input.addEventListener("input", () => validateField(input));
@@ -1989,7 +2053,8 @@
     resetFilters,
     exportBackupJSON,
     fetchMissedHistory,
-    changeSyncRoom
+    changeSyncRoom,
+    quickFillBookingForm
   };
 
   window.NexusHub = NexusHubAPI;
