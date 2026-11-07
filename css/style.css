@@ -1596,11 +1596,41 @@ svg.hero-blob { display: none !important; }
   background: #0B0F19 !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 20px !important;
-  padding: 2.2rem !important;
+  padding: 2.2rem 2.2rem 1.6rem 2.2rem !important;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(99, 102, 241, 0.15) !important;
   position: relative;
-  max-height: 92vh;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.reserve-pass-modal-box .modal-header-block {
+  flex-shrink: 0;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.reserve-pass-modal-box form {
   overflow-y: auto;
+  flex: 1;
+  padding-right: 0.4rem;
+  margin-right: -0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.35) transparent;
+}
+
+.reserve-pass-modal-box form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reserve-pass-modal-box form::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.reserve-pass-modal-box form::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.35);
+  border-radius: 4px;
 }
 
 .reserve-form-grid {
@@ -1669,6 +1699,18 @@ svg.hero-blob { display: none !important; }
   transition: all 0.2s ease;
 }
 
+.reserve-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  padding-right: 2.4rem !important;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.95rem center !important;
+  background-size: 15px !important;
+}
+
 .reserve-input:focus,
 .reserve-select:focus,
 .reserve-textarea:focus {
@@ -1733,8 +1775,13 @@ svg.hero-blob { display: none !important; }
   justify-content: flex-end;
   align-items: center;
   gap: 1rem;
-  padding-top: 1.25rem;
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  bottom: 0;
+  background: #0B0F19;
+  z-index: 10;
 }
 
 .btn-reserve-cancel {
@@ -2160,8 +2207,18 @@ svg.hero-blob { display: none !important; }
 
 .form-feedback {
   font-size: 0.75rem;
-  color: var(--neon-magenta);
-  min-height: 1rem;
+  color: #EF4444;
+  min-height: 1.1rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.form-feedback.is-error {
+  color: #EF4444 !important;
+}
+
+.form-feedback.is-success {
+  color: #10B981 !important;
 }
 
 .checkbox-wrap {
@@ -2723,4 +2780,58 @@ svg.hero-blob { display: none !important; }
 
 @media (max-width: 560px) {
   .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* --------------------------------------------------------------------------
+   TOAST NOTIFICATION SYSTEM
+   -------------------------------------------------------------------------- */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+  max-width: 420px;
+}
+
+.toast {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: #F8FAFC;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.toast-success {
+  border-left: 4px solid #10B981 !important;
+}
+
+.toast-error {
+  border-left: 4px solid #EF4444 !important;
+}
+
+.toast-info {
+  border-left: 4px solid #06B6D4 !important;
+}
+
+.toast svg {
+  flex-shrink: 0;
 }

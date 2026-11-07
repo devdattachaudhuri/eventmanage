@@ -31,7 +31,10 @@
   // Determine active sync room (URL parameter ?room=xyz takes precedence over localStorage)
   const urlParams = new URLSearchParams(window.location.search);
   const roomParam = urlParams.get("room");
-  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM) || "kpulse_campus_sync_v1";
+  let syncRoom = roomParam || localStorage.getItem(STORAGE_KEYS.SYNC_ROOM);
+  if (!syncRoom || syncRoom === "default") {
+    syncRoom = "kpulse_campus_sync_v1";
+  }
   if (roomParam) {
     localStorage.setItem(STORAGE_KEYS.SYNC_ROOM, roomParam);
   }
@@ -1021,8 +1024,16 @@
       }
     } catch (e) {}
 
+    const form = document.getElementById("registration-form");
+    if (form) form.scrollTop = 0;
+
     overlay.classList.add("active", "open");
     document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+      const nameInput = document.getElementById("reg-full-name");
+      if (nameInput) nameInput.focus();
+    }, 120);
   }
 
   function quickFillBookingForm() {
@@ -1033,12 +1044,13 @@
     const randomName = names[Math.floor(Math.random() * names.length)];
     const cleanName = randomName.toLowerCase().replace(/[^a-z]/g, ".");
     const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const randomRole = roles[Math.floor(Math.random() * roles.length)];
 
     form.elements["fullName"].value = randomName;
     form.elements["email"].value = `${cleanName}${randomNum}@campus.edu`;
     form.elements["phone"].value = `9876543210`;
     form.elements["rollNo"].value = `2105${randomNum}`;
-    form.elements["attendeeRole"].value = roles[0];
+    form.elements["attendeeRole"].value = randomRole;
     if (form.elements["agreeTerms"]) form.elements["agreeTerms"].checked = true;
 
     // Validate fields visually
