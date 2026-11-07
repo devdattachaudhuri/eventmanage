@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusPulse | Next-Gen Campus Event Discovery & Pass Reservation Platform</title>
+  <title>K-Pulse | Next-Gen Campus Event Discovery & Pass Reservation Platform</title>
   
   <!-- SEO & Author Metadata -->
-  <meta name="description" content="CampusPulse is an ultra-modern 3D glassmorphic campus event discovery and digital boarding pass reservation platform authored by Devdatta Chaudhuri.">
+  <meta name="description" content="K-Pulse is an ultra-modern 3D glassmorphic campus event discovery and digital boarding pass reservation platform authored by Devdatta Chaudhuri.">
   <meta name="author" content="Devdatta Chaudhuri">
-  <meta name="keywords" content="CampusPulse, Event Management, College Events, Hackathons, Cultural Fest, Tickets, Digital Pass, QR Code, Web Application">
+  <meta name="keywords" content="K-Pulse, Event Management, College Events, Hackathons, Cultural Fest, Tickets, Digital Pass, QR Code, Web Application">
   
   <!-- Open Graph Protocol -->
-  <meta property="og:title" content="CampusPulse — Campus Event Discovery & Pass Reservation Platform">
+  <meta property="og:title" content="K-Pulse — Campus Event Discovery & Pass Reservation Platform">
   <meta property="og:description" content="Explore flagship collegiate hackathons, cultural festivals, esports leagues, and venture conclaves with interactive 3D perspective cards and instant digital boarding passes.">
   <meta property="og:type" content="website">
   
@@ -22,6 +22,8 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'%3E%3C/polygon%3E%3C/svg%3E">
 </head>
 <body>
+  <!-- Noise grain overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
 
   <!-- Ambient Floating Neon Glow Orbs -->
   <div class="ambient-glow glow-orb-1" aria-hidden="true"></div>
@@ -39,13 +41,13 @@
     <div class="container nav-container">
       
       <!-- Brand Logo -->
-      <a href="#" class="brand-logo" aria-label="CampusPulse Homepage">
+      <a href="#" class="brand-logo" aria-label="K-Pulse Homepage">
         <div class="logo-symbol">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
           </svg>
         </div>
-        <span>Campus<span class="brand-text-accent">Pulse</span></span>
+        <span>K-<em>Pulse</em></span>
       </a>
 
       <!-- Desktop Navigation Links -->
@@ -125,6 +127,8 @@
        HERO SECTION (3D GLASSMORPHISM & PARALLAX)
        ========================================================================= -->
   <section class="hero-section" id="hero-section">
+    <!-- Animated scan line -->
+    <div class="scan-line" aria-hidden="true"></div>
     <div class="container">
       <div class="hero-grid">
         
@@ -185,6 +189,13 @@
 
         <!-- Right 3D Interactive Floating Card -->
         <div class="hero-card-perspective">
+          <!-- Decorative blobs -->
+          <svg class="hero-blob hero-blob-1" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M60,-60C80,-30,100,0,80,30C60,60,30,80,0,80C-30,80,-60,60,-80,30C-100,0,-100,-30,-80,-60C-60,-90,-30,-100,0,-100C30,-100,40,-90,60,-60Z"/>
+          </svg>
+          <svg class="hero-blob hero-blob-2" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M40,-80C60,-60,80,-30,80,0C80,30,60,60,30,80C0,100,-30,80,-60,60C-80,40,-80,0,-60,-40C-40,-80,-20,-100,0,-100C20,-100,20,-100,40,-80Z"/>
+          </svg>
           <div class="hero-3d-card" id="hero-floating-card">
             <div class="hero-card-badge card-layer-z1">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
