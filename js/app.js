@@ -1667,6 +1667,14 @@
   // ---------------------------------------------------------------------------
   // MODAL CONTROLS & EVENT LISTENERS
   // ---------------------------------------------------------------------------
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+  }
+
   function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -1991,7 +1999,7 @@
   // ---------------------------------------------------------------------------
   // INITIALIZATION ON DOM READY
   // ---------------------------------------------------------------------------
-  document.addEventListener("DOMContentLoaded", () => {
+  function bootApplication() {
     initState();
     setupEventListeners();
     updatePassesBadge();
@@ -2000,6 +2008,12 @@
     startCountdownLoops();
     animateStatsCounter();
     initRealtimeSync();
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootApplication);
+  } else {
+    bootApplication();
+  }
 
 })();
