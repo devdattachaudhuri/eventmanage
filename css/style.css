@@ -282,7 +282,7 @@ nav { margin-left: auto; }
 
 /* Mobile nav */
 .mobile-nav-drawer {
-  display: none;
+  display: none !important;
   position: fixed;
   top: 64px; left: 0; right: 0;
   background: var(--void);
@@ -292,7 +292,8 @@ nav { margin-left: auto; }
   padding: 1rem;
   gap: 0.25rem;
 }
-.mobile-nav-drawer.open { display: flex; }
+.mobile-nav-drawer.open,
+.mobile-nav-drawer.active { display: flex !important; }
 .mobile-nav-link {
   color: var(--white);
   text-decoration: none;
@@ -379,7 +380,8 @@ nav { margin-left: auto; }
   z-index: 2;
 }
 .gradient-text {
-  display: block;
+  display: inline;
+  white-space: nowrap;
   background: linear-gradient(90deg, var(--lime), var(--teal), var(--violet));
   background-size: 200% auto;
   -webkit-background-clip: text;
